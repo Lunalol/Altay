@@ -1,0 +1,209 @@
+div,img {
+	user-select: none;
+}
+
+#ALTAYplayArea div {
+	/*	border: 1px solid red;*/
+}
+#ALTAYplayArea {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 5px;
+}
+
+#ALTAYboard {
+	position: relative;
+	aspect-ratio: 2835/2008;
+	background-image: url('img/board.jpg');
+	background-size: cover;
+	margin: 5px 200px;
+	border-radius: 10px;
+	box-shadow: 0px 0px 5px 5px black;
+	width: 80%;
+	max-width: 100vmin;
+}
+
+#ALTAYachievementCardDisplay {
+	display: grid;
+	grid-template-columns: [level] 175px repeat(3, [cards] 175px);
+	grid-template-rows: [level-1] 1fr [level-2] 1fr [level-3] 1fr;
+	justify-content: center;
+	margin: 5px 0px;
+}
+#ALTAYachievementCardDisplay>div>.ALTAYachievementCards:not(:first-child) {
+	margin-top: -115px;
+}
+
+#ALTAYactionCardDisplay {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin: 5px 0px;
+}
+#ALTAYactionCardDisplay>.ALTAYactionCards {
+	height: 150px;
+	border-radius: 5px;
+}
+
+.ALTAYachievementCards {
+	aspect-ratio: 500/358;
+	background-image: url('img/achievementCards.jpg');
+	background-size: 1100%;
+	border-radius: 5%;
+	margin: 2px;
+}
+.ALTAYachievementCards.ALTAYlevel-1 {
+	background-position-y: 0%;
+}
+.ALTAYachievementCards.ALTAYlevel-2 {
+	background-position-y: 50%;
+}
+.ALTAYachievementCards.ALTAYlevel-3 {
+	background-position-y: 100%;
+}
+.ALTAYachievementCardHolder>.ALTAYachievementCards:hover {
+	filter: contrast(200%);
+	z-index: 1;
+}
+
+.ALTAYactionCardHolder {
+	flex: 1 1 auto;
+}
+.ALTAYactionCards {
+	aspect-ratio: 300/419;
+	background-image: url('img/actionCards.jpg');
+	background-size: 8800%;
+	/*	border-radius: 5px;*/
+	margin: 2px;
+}
+.ALTAYactionCard {
+	background-position-y: 100%;
+}
+.ALTAYactionCard.EARTHFOLK {
+	background-position-y: 0%;
+}
+.ALTAYactionCard.ELVENFOLK {
+	background-position-y: 25%;
+}
+.ALTAYactionCard.FIREFOLK {
+	background-position-y: 50%;
+}
+.ALTAYactionCard.SMALLFOLK {
+	background-position-y: 75%;
+}
+.ALTAYactionCardHolder>.ALTAYactionCard:not(:first-child) {
+	margin-top: -120%;
+}
+.ALTAYactionCard:hover {
+	filter: contrast(200%);
+	z-index: 1;
+}
+
+.ALTAYmarker {
+	width: 5%;
+	background-image: url('img/markers.png');
+	transform-origin: center;
+	z-index: 0;
+}
+
+.ALTAYtoken {
+	width: 8%;
+	aspect-ratio: 295/390;
+	background-size: 400%;
+	background-image: url('img/tokens.png');
+	transform-origin: center;
+	transition: transform .25s, box-shadow .25s;
+	z-index: 2;
+}
+.ALTAYtoken:hover {
+	transition: transform .5s, box-shadow .5s;
+	box-shadow: 0px 0px 10px 5px black;
+}
+.ALTAYtoken:focus {
+	transform: translateY(-50%);
+	transition: transform .5s, box-shadow .5s;
+}
+.ALTAYtoken[data-type='EARTHFOLK'] {
+	background-position-x: 0%;
+}
+.ALTAYtoken[data-type='ELVENFOLK'] {
+	background-position-x: 33.33%;
+}
+.ALTAYtoken[data-type='FIREFOLK'] {
+	background-position-x: 66.66%;
+}
+.ALTAYtoken[data-type='SMALLFOLK'] {
+	background-position-x: 100%;
+}
+
+.ALTAYconquestMarker {
+	aspect-ratio: 1;
+	background-size: 1100%;
+	transform: rotate(-45deg);
+	transition: transform .25s, box-shadow .25s;
+	border-radius: 25%;
+	box-shadow: 0px 0px 5px 1px black;
+	z-index: 1;
+}
+.ALTAYmarker[data-type='x1'] {
+	background-position-x: 0%;
+}
+.ALTAYmarker[data-type='x2food'] {
+	background-position-x: 10%;
+}
+.ALTAYmarker[data-type='x2wood'] {
+	background-position-x: 20%;
+}
+.ALTAYmarker[data-type='x2metal'] {
+	background-position-x: 30%;
+}
+.ALTAYmarker[data-type='x2stone'] {
+	background-position-x: 40%;
+}
+.ALTAYmarker[data-type='x3wood'] {
+	background-position-x: 50%;
+}
+.ALTAYmarker[data-type='x3metal'] {
+	background-position-x: 60%;
+}
+.ALTAYmarker[data-type='x3stone'] {
+	background-position-x: 70%;
+}
+.ALTAYmarker[data-type='VP'] {
+	aspect-ratio: 1/2;
+	background-size: 2200%;
+	background-position-x: 100%;
+	transform: translate(40%,40%);
+}
+.ALTAYmarker:hover {
+	z-index: 10;
+	box-shadow: 0px 0px 10px 5px black;
+	transition: transform .5s, box-shadow .5s;
+}
+.ALTAYconquestMarker:focus {
+	transform: translateY(-50%) rotate(-45deg);
+	transition: transform .5s, box-shadow .5s;
+}
+
+.ALTAYregion {
+	width: 20%;
+	height: 25%;
+	/*	aspect-ratio: 1;*/
+	border-radius: 50%;
+	pointer-events: none;
+}
+.ALTAYregion.ALTAYselectable {
+	box-shadow: 0px 0px 50px 50px black;
+	pointer-events: all;
+}
+.ALTAYdisabled {
+	pointer-events: none;
+}
+
+.ALTAYresources {
+	display: grid;
+	grid-template-rows: [svg] 30px [resource] auto [value] auto;
+	grid-template-columns: [food] 1fr [wood] 1fr [metal] 1fr [stone] 1fr [culture] 1fr;
+	justify-items: center;
+}
