@@ -12,6 +12,10 @@ class Markers extends APP_GameClass
 		self::DbQuery("INSERT INTO markers (type,location) VALUES ('$type','$location')");
 		return self::DbGetLastId();
 	}
+	static function destroy(int $id): void
+	{
+		self::DbQuery("DELETE FROM markers WHERE id = $id");
+	}
 	static function getAllDatas(): array
 	{
 		return self::getCollectionFromDB("SELECT * FROM markers ORDER BY type");

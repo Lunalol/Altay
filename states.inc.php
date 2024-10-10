@@ -14,7 +14,7 @@ $machinestates = [
 	],
 	10 => [
 		'name' => 'startOfGame',
-		'description' => 'Start of game',
+		'description' => 'Game setup',
 		'type' => 'game',
 		'action' => 'stStartOfGame',
 		'transitions' => ['factionChoice' => 20]
@@ -47,7 +47,7 @@ $machinestates = [
 		'name' => 'previousPlayer',
 		'type' => 'game',
 		'action' => 'stPreviousPlayer',
-		'transitions' => ['settlementChoice' => 30, 'startOfGame' => 100]
+		'transitions' => ['settlementChoice' => 30, 'startOfTurn' => 100]
 	],
 	99 => [
 		'name' => 'gameEnd',
@@ -55,5 +55,13 @@ $machinestates = [
 		'type' => 'manager',
 		'action' => 'stGameEnd',
 		'args' => 'argGameEnd'
+	],
+	100 => [
+		'name' => 'gameTurn',
+		'description' => clienttranslate('${actplayer} must play cards in hand'),
+		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
+		'type' => 'activeplayer',
+		'possibleactions' => ['actPlay'],
+		'transitions' => ['continue' => 100]
 	],
 ];

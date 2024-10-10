@@ -14,7 +14,11 @@ class Factions extends APP_GameClass
 	}
 	static function getAllDatas(): array
 	{
-		return self::getCollectionFromDB("SELECT faction,player_id,food,wood,metal,stone,culture FROM factions");
+		return self::getCollectionFromDB("SELECT faction,player_id FROM factions");
+	}
+	static function getAll(): array
+	{
+		return self::getCollectionFromDB("SELECT faction,player_id FROM factions", true);
 	}
 	static function get(int $player_id): string
 	{

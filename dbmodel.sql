@@ -24,6 +24,5 @@ CREATE TABLE IF NOT EXISTS `markers` (
 
 CREATE TABLE IF NOT EXISTS `factions` (
 	`faction` ENUM('EARTHFOLK', 'ELVENFOLK', 'FIREFOLK', 'SMALLFOLK') PRIMARY KEY, `player_id` INT,
-	`food` INT(2) DEFAULT 0, `wood` INT(2) DEFAULT 0, `metal` INT(2) DEFAULT 0, `stone` INT(2) DEFAULT 0,`culture` INT(2) DEFAULT 0,
 	`status` JSON
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

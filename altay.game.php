@@ -52,6 +52,8 @@ class Altay extends Table
 //
 		$player_id = intval(self::getCurrentPlayerId());
 //
+		$result["ACTIONCARDS"] = $this->ACTIONSCARDS;
+//
 		$result["players"] = $this->getCollectionFromDb("SELECT player_id, player_score score FROM player");
 //
 		$result["actionCards"][1] = $this->actionCards->getCardsInLocation("display-1", null, 'location_arg');

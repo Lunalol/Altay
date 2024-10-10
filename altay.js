@@ -1,9 +1,11 @@
 /* global g_gamethemeurl, ebg, _ */
 
-const DELAY = 1000;
+const DELAY = 250;
 const COLORS = {ELVENFOLK: '#47a34b', EARTHFOLK: '#ebb41b', SMALLFOLK: '#00a7d2', FIREFOLK: '#e12129'};
-
-define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamethemeurl + "modules/JavaScript/constants.js"], function (dojo, declare)
+define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
+	g_gamethemeurl + "modules/JavaScript/constants.js",
+	g_gamethemeurl + "modules/JavaScript/actionCards.js"
+], function (dojo, declare)
 {
 	return declare("bgagame.altay", ebg.core.gamegui,
 	{
@@ -29,20 +31,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 			for (let player_id in gamedatas.players)
 			{
 				const node = this.getPlayerPanelElement(player_id);
-				const grid = dojo.place(`<div id='ALTAYplayer-${player_id}' class='ALTAYresources'></div>`, node);
-				for (let resource of ['food', 'wood', 'metal', 'stone', 'culture'])
-				{
-					dojo.place(`<img style='grid-row:svg;grid-column:${resource};height:100%;' draggable='false' src='${g_gamethemeurl}img/SVG/${resource}.svg'>`, grid);
-					dojo.place(`<div style='grid-row:resource;grid-column:${resource};font-size:12px;font-family:fantasy;'>${_(resource).toUpperCase()}<div>`, grid);
-					dojo.place(`<div id='ALTAYplayer-${player_id}-${resource}' style='grid-row:value;grid-column:${resource};font-size:25px;font-family:fantasy;'>0<div>`, grid);
-				}
-			}
-			for (let faction of Object.values(gamedatas.factions))
-			{
-				for (let resource of ['food', 'wood', 'metal', 'stone', 'culture'])
-				{
-					$(`ALTAYplayer-${faction.player_id}-${resource}`).innerHTML = +faction[resource];
-				}
+				dojo.place(`<div id='ALTAYresources-${player_id}' class='ALTAYresources'></div>`, node);
 			}
 //
 // Board
@@ -102,6 +91,11 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 					dojo.place(`<div class='ALTAYactionCards ALTAYactionCard' style='background-position-x:${((card.type - 1) * 8 + +card.type_arg) * 100 / 87}%'></div>`, node, 'first');
 				}
 			}
+//
+// Player hand
+//
+			this.playerHand = $('ALTAYplayerHand');
+			for (let card of Object.values(gamedatas.hand)) this.placeCard(card);
 //
 			this.setupNotifications();
 //
@@ -177,6 +171,17 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 							for (let location of args) dojo.addClass(`ALTAYregion-${location}`, 'ALTAYselectable');
 						}
 						break;
+//
+					case 'gameTurn':
+//
+						{
+							this.addActionButton('ALTAYpass', _('End of Turn'), (event) => {
+								dojo.stopEvent(event);
+								if (dojo.query('.ALTAYactionCard', this.playerHand).length === 0) this.bgaPerformAction('pass');
+								else this.confirmationDialog('You have unused cards in hand', () => this.bgaPerformAction('pass'));
+							}, null, false, 'red');
+						}
+						break;
 				}
 			}
 		},
@@ -184,8 +189,13 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 		{
 			console.log('notifications subscriptions setup');
 //
+			dojo.subscribe('drawCard', (notif) => this.drawCard(notif.args.card));
+			dojo.subscribe('playCard', (notif) => this.playCard(notif.args.card));
+			dojo.subscribe('discardCard', (notif) => this.discardCard(notif.args.card));
+//
 			dojo.subscribe('placeMarker', (notif) => this.placeMarker(notif.args.marker));
 			dojo.subscribe('removeMarker', (notif) => this.removeMarker(notif.args.marker));
+//
 			dojo.subscribe('placeToken', (notif) => this.placeToken(notif.args.token));
 			dojo.subscribe('removeToken', (notif) => this.removeToken(notif.args.token));
 //
@@ -193,10 +203,92 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 		},
 		setSynchronous()
 		{
-			this.notifqueue.setSynchronous('placeMarker', DELAY);
+			this.notifqueue.setSynchronous('drawCard', DELAY);
+			this.notifqueue.setSynchronous('playCard', DELAY);
+			this.notifqueue.setSynchronous('discardCard', DELAY);
+//
+			this.notifqueue.setSynchronous('placeMarker', DELAY / 4);
 			this.notifqueue.setSynchronous('removeMarker', DELAY);
-			this.notifqueue.setSynchronous('placeToken', DELAY);
-			this.notifqueue.setSynchronous('removeToken', DELAY);
+//
+			this.notifqueue.setSynchronous('placeToken', DELAY / 4);
+			this.notifqueue.setSynchronous('removeToken', DELAY / 4);
+		},
+		drawCard(card)
+		{
+			console.log('drawCard', card);
+//
+			const node = dojo.place(actionCard(card), this.getPlayerPanelElement(this.player_id));
+//
+			const anim = this.slideToObject(node, this.playerHand, DELAY);
+			anim.onEnd = (node) => {
+				dojo.destroy(node);
+				this.placeCard(card);
+			};
+			anim.play();
+		},
+		placeCard(card)
+		{
+			console.log('placeCard', card);
+//
+			const node = dojo.place(actionCard(card), this.playerHand);
+//
+			dojo.connect(node, 'click', (event) => {
+				dojo.stopEvent(event);
+				this.playCard(card);
+			});
+		},
+		playCard(card)
+		{
+			console.log('playCard', card);
+//
+			let node = $(`ALTAYcard-${card.id}`);
+			if (node)
+			{
+				dojo.style(node, 'transform', 'none');
+				dojo.style(node, 'width', `${node.clientWidth}px`);
+				dojo.style(node, 'z-index', 100);
+				node = this.attachToNewParent(node, 'ALTAYboard');
+				const anim = this.slideToObject(node, 'ALTAYboard', DELAY);
+				anim.onEnd = () => {
+					const actionCard = isNaN(card.type) ? this.gamedatas.ACTIONCARDS[card.type][card.type_arg] : this.gamedatas.ACTIONCARD[(card.type - 1) * 8 + card.type_arg];
+					this.removeActionButtons();
+					for (let variant = 0; variant <= 2; variant++)
+					{
+						if (actionCard[variant])
+						{
+							this.addActionButton(`ALTAYvariant-${variant}`, dojo.string.substitute(_(actionCard[variant]), {
+								'food': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/FOOD.svg'>`,
+								'wood': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/WOOD.svg'>`,
+								'metal': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/METAL.svg'>`,
+								'stone': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/STONE.svg'>`,
+								'culture': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/CULTURE.svg'>`,
+								'settlement': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/SETTLEMENT.svg'>`,
+								'attack': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/ATTACK.svg'>`,
+								'defense': `<img style='margin:2px;height:25px;vertical-align:middle;' draggable='false' src='${g_gamethemeurl}img/SVG/DEFENSE.svg'>`
+							}), () => this.bgaPerformAction('actPlay', {id: card.id, variant: variant}), null, false, 'gray');
+						}
+					}
+					this.addActionButton('ALTAYcancel', _('cancel'), () => {
+						dojo.destroy(node);
+						this.placeCard(card);
+						this.restoreServerGameState();
+					});
+				};
+				anim.play();
+			}
+		},
+		discardCard(card)
+		{
+			console.log('discardCard', card);
+//
+			const node = $(`ALTAYcard-${card.id}`);
+			if (node)
+			{
+				dojo.style(node, 'transform', 'none');
+				dojo.style(node, 'width', `${node.clientWidth}px`);
+				dojo.style(node, 'z-index', 100);
+				this.slideToObjectAndDestroy(this.attachToNewParent(node, 'logoicon'), 'logoicon', DELAY);
+			}
 		},
 		placeMarker(marker)
 		{
@@ -227,12 +319,31 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter", g_gamet
 		{
 			console.log('placeToken', token);
 //
-			const node = dojo.place(`<div id='ALTAYtoken-${token.id}' class='ALTAYtoken' tabindex='0' data-type='${token.type}' data-location='${token.location}'></div>`, this.board);
-			dojo.style(node, {
-				position: 'absolute',
-				left: `CALC(${BOARD[token.location][0] - 0}% - ${node.clientWidth / 2}px)`,
-				top: `CALC(${BOARD[token.location][1] - 0}% - ${node.clientHeight / 2}px)`
-			});
+			switch (token.type)
+			{
+				case 'FOOD':
+				case 'WOOD':
+				case 'METAL':
+				case 'STONE':
+				case 'CULTURE':
+					{
+						dojo.place(`<img style='margin:2px;' draggable='false' src='${g_gamethemeurl}img/SVG/${token.type}.svg'>`, `ALTAYresources-${token.location}`);
+					}
+					break;
+				case 'EARTHFOLK':
+				case 'ELVENFOLK':
+				case 'FIREFOLK':
+				case 'SMALLFOLK':
+					{
+						const node = dojo.place(`<div id='ALTAYtoken-${token.id}' class='ALTAYtoken' tabindex='0' data-type='${token.type}' data-location='${token.location}'></div>`, this.board);
+						dojo.style(node, {
+							position: 'absolute',
+							left: `CALC(${BOARD[token.location][0] - 0}% - ${node.clientWidth / 2}px)`,
+							top: `CALC(${BOARD[token.location][1] - 0}% - ${node.clientHeight / 2}px)`
+						});
+					}
+					break;
+			}
 		}
 	});
 });

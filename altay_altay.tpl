@@ -6,6 +6,7 @@
 	</div>
 	<div id="ALTAYactionCardDisplay">
 	</div>
+	<div id='ALTAYplayerHand' class='ALTAYplayerHand'></div>
 </div>
 <script type="text/javascript">
 </script>

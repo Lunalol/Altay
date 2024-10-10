@@ -12,7 +12,7 @@ trait gameStates
 //
 // Action decks
 //
-		foreach (array_keys($this->Factions) as $faction)
+		foreach (array_keys($this->FACTIONS) as $faction)
 		{
 			$actionCards = [];
 			for ($n = 1; $n <= 10; $n++) $actionCards[] = ['type' => $faction, 'type_arg' => $n, 'nbr' => 1];
@@ -103,20 +103,35 @@ trait gameStates
 	}
 	function stNextPlayer()
 	{
-		if ($this->activeNextPlayer() === $this->globals->get(FIRSTPLAYER))
-		{
-			$this->activePrevPlayer();
-			$this->gamestate->nextState('settlementChoice');
-		}
-		else $this->gamestate->nextState('factionChoice');
+		if ($this->activeNextPlayer() !== $this->globals->get(FIRSTPLAYER)) return $this->gamestate->nextState('factionChoice');
+//
+		$this->activePrevPlayer();
+		$this->gamestate->nextState('settlementChoice');
 	}
 	function stPreviousPlayer()
 	{
-		if (intval($this->getActivePlayerId()) !== $this->globals->get(FIRSTPLAYER) || true)
+		if (intval($this->getActivePlayerId()) !== $this->globals->get(FIRSTPLAYER))
 		{
 			$this->activePrevPlayer();
-			$this->gamestate->nextState('settlementChoice');
+			return $this->gamestate->nextState('settlementChoice');
 		}
-		else $this->gamestate->nextState('startOfGame');
+//
+		foreach (Factions::getAll() as $faction => $player_id)
+		{
+			$this->actionCards->shuffle($player_id);
+//* -------------------------------------------------------------------------------------------------------- */
+			self::notifyAllPlayers('msg', '<B>${faction}</B> draws 5 cards', ['faction' => $this->FACTIONS[$faction], 'i18n' => ['faction']]);
+//* -------------------------------------------------------------------------------------------------------- */
+			foreach ($this->actionCards->pickCards(5, $player_id, $player_id) as $card)
+//* -------------------------------------------------------------------------------------------------------- */
+				self::notifyPlayer($player_id, 'drawCard', '', ['card' => $card]);
+//* -------------------------------------------------------------------------------------------------------- */
+		}
+//
+		$this->gamestate->nextState('startOfTurn');
+	}
+	function stStartOfTurn()
+	{
+
 	}
 }

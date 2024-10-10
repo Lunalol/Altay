@@ -9,7 +9,7 @@ trait gameStateArguments
 {
 	function argsFactionChoice()
 	{
-		return array_values(array_diff(array_keys($this->Factions), array_keys(Factions::getAllDatas())));
+		return array_values(array_diff(array_keys($this->FACTIONS), array_keys(Factions::getAllDatas())));
 	}
 	function argsSettlementChoice()
 	{

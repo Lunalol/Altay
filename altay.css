@@ -40,6 +40,7 @@ div,img {
 	flex-wrap: wrap;
 	justify-content: space-evenly;
 	margin: 5px 0px;
+	width: 100%;
 }
 #ALTAYactionCardDisplay>.ALTAYactionCards {
 	height: 150px;
@@ -50,7 +51,8 @@ div,img {
 	aspect-ratio: 500/358;
 	background-image: url('img/achievementCards.jpg');
 	background-size: 1100%;
-	border-radius: 5%;
+	border-radius: 5px;
+	border: 1px solid white;
 	margin: 2px;
 }
 .ALTAYachievementCards.ALTAYlevel-1 {
@@ -71,10 +73,13 @@ div,img {
 	flex: 1 1 auto;
 }
 .ALTAYactionCards {
+	position: relative;
 	aspect-ratio: 300/419;
 	background-image: url('img/actionCards.jpg');
 	background-size: 8800%;
 	/*	border-radius: 5px;*/
+	border: 1px solid white;
+	border-radius: 5px;
 	margin: 2px;
 }
 .ALTAYactionCard {
@@ -98,6 +103,51 @@ div,img {
 .ALTAYactionCard:hover {
 	filter: contrast(200%);
 	z-index: 1;
+}
+
+.ALTAYplayerHand {
+	position: fixed;
+	bottom: -240px;
+	display:flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	transition: bottom 1s;
+	background-color: #00000080;
+	border-radius: 25px;
+	padding: 25px;
+	box-sizing: border-box;
+	z-index: 25;
+}
+.ALTAYplayerHand:hover {
+	bottom: 0px;
+	transition:bottom .5s;
+}
+.ALTAYplayerHand>.ALTAYactionCards  {
+	height: 250px;
+	transition:transform 1s, box-shadow .5s;
+}
+.ALTAYplayerHand>.ALTAYactionCards:nth-child(even) {
+	transform:rotate(10deg);
+}
+.ALTAYplayerHand>.ALTAYactionCards:nth-child(odd) {
+	transform:rotate(-10deg);
+}
+.ALTAYplayerHand>.ALTAYactionCards:hover {
+	transform:scale(125%);
+	transition:transform 1s, box-shadow .5s;
+	z-index:20;
+}
+.ALTAYplayerHand>.ALTAYactionCards.ALTAYselectable {
+	transform:scale(150%);
+	box-shadow:0px 0px 5px 10px #ffffff40;
+	transition:transform 1s, box-shadow .5s;
+	z-index:5;
+}
+.ALTAYplayerHand>.ALTAYactionCards.ALTAYselected {
+	transform:scale(200%);
+	box-shadow:0px 0px 5px 10px #ffffffff;
+	transition:transform 1s, box-shadow .5s;
+	z-index:10;
 }
 
 .ALTAYmarker {
@@ -202,8 +252,6 @@ div,img {
 }
 
 .ALTAYresources {
-	display: grid;
-	grid-template-rows: [svg] 30px [resource] auto [value] auto;
-	grid-template-columns: [food] 1fr [wood] 1fr [metal] 1fr [stone] 1fr [culture] 1fr;
-	justify-items: center;
+	display: flex;
+	height: 25px;
 }

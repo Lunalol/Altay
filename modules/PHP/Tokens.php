@@ -12,6 +12,10 @@ class Tokens extends APP_GameClass
 		self::DbQuery("INSERT INTO tokens (type,location) VALUES ('$type','$location')");
 		return self::DbGetLastId();
 	}
+	static function destroy(int $id): void
+	{
+		self::DbQuery("DELETE FROM tokens WHERE id = $id");
+	}
 	static function getAllDatas(): array
 	{
 		return self::getCollectionFromDB("SELECT * FROM tokens ORDER BY type");
