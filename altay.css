@@ -2,6 +2,19 @@ div,img {
 	user-select: none;
 }
 
+.ALTAYphase {
+	font-family: CutrightWF;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 5px;
+	border-radius: 5px;
+    background-color: #fcb062;
+	color: black;
+    font-size: 12pt;
+    font-weight: bold;
+}
+
 #ALTAYplayArea div {
 	/*	border: 1px solid red;*/
 }
@@ -104,6 +117,12 @@ div,img {
 	filter: contrast(200%);
 	z-index: 1;
 }
+.ALTAYactionDisplay>.ALTAYactionCards  {
+	width:100px;
+}
+.dijitTooltipContainer .ALTAYactionCards  {
+	width:250px;
+}
 
 .ALTAYplayerHand {
 	position: fixed;
@@ -118,7 +137,7 @@ div,img {
 	box-sizing: border-box;
 	z-index: 25;
 }
-.ALTAYplayerHand:hover {
+.ALTAYplayerHand.ALTAYselected,.ALTAYplayerHand:hover {
 	bottom: 0px;
 	transition:bottom .5s;
 }
@@ -253,5 +272,75 @@ div,img {
 
 .ALTAYresources {
 	display: flex;
+	align-items: center;
+}
+
+.ALTAYresource {
+	position: relative;
 	height: 25px;
+	margin: 5px;
+}
+.ALTAYresource.ALTAYselected {
+	box-shadow: 0px 0px 5px 5px red;
+    border-radius: 25%;
+}
+
+.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='6']>.ALTAYresource:first-child,.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='7']>.ALTAYresource:first-child {
+	position: absolute;
+	top: 62%;
+	left: 20%;
+}
+.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='6']>.ALTAYresource:last-child,.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='7']>.ALTAYresource:last-child {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='6']>.ALTAYresource,.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='7']>.ALTAYresource {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='8']>.ALTAYresource:first-child {
+	position: absolute;
+	top: 62%;
+	left: 20%;
+}
+.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='8']>.ALTAYresource:last-child {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='6']>.ALTAYresource:first-child,.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='5']>.ALTAYresource:first-child {
+	position: absolute;
+	top: 62%;
+	left: 20%;
+}
+.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='6']>.ALTAYresource:last-child,.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='5']>.ALTAYresource:last-child {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='7']>.ALTAYresource {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='8']>.ALTAYresource:first-child {
+	position: absolute;
+	top: 62%;
+	left: 20%;
+}
+.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='8']>.ALTAYresource:last-child {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+
+.ALTAYplayOnTable {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+.ALTAYplayOnTable>.ALTAYactionCards {
+	width: 100px;
 }

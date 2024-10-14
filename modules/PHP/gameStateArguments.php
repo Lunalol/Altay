@@ -20,4 +20,11 @@ trait gameStateArguments
 //
 		return array_values(array_diff($farmlands, array_column(Tokens::getAllDatas(), 'location')));
 	}
+	function argsPlaceSettlement()
+	{
+		$player_id = intval($this->getActivePlayerId());
+		$faction = Factions::getFaction($player_id);
+//
+		return Board::settlements($faction);
+	}
 }

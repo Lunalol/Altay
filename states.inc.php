@@ -57,11 +57,32 @@ $machinestates = [
 		'args' => 'argGameEnd'
 	],
 	100 => [
+		'name' => 'startOfTurn',
+		'type' => 'game',
+		'action' => 'stStartOfTurn',
+		'transitions' => ['gameTurn' => 110]
+	],
+	110 => [
 		'name' => 'gameTurn',
 		'description' => clienttranslate('${actplayer} must play cards in hand'),
 		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
 		'type' => 'activeplayer',
-		'possibleactions' => ['actPlay'],
-		'transitions' => ['continue' => 100]
+		'possibleactions' => ['actPlay', 'actEffect', 'actPass'],
+		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'pass' => 190]
+	],
+	120 => [
+		'name' => 'placeSettlement',
+		'description' => clienttranslate('${actplayer} must place a settlement'),
+		'descriptionmyturn' => clienttranslate('${you} must place a settlement'),
+		'type' => 'activeplayer',
+		'args' => 'argsPlaceSettlement',
+		'possibleactions' => ['actPlaceSettlement'],
+		'transitions' => ['continue' => 110]
+	],
+	190 => [
+		'name' => 'endOfTurn',
+		'type' => 'game',
+		'action' => 'stEndOfTurn',
+		'transitions' => ['startOfTurn' => 100]
 	],
 ];

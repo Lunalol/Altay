@@ -12,13 +12,6 @@ trait gameStates
 //
 // Action decks
 //
-		foreach (array_keys($this->FACTIONS) as $faction)
-		{
-			$actionCards = [];
-			for ($n = 1; $n <= 10; $n++) $actionCards[] = ['type' => $faction, 'type_arg' => $n, 'nbr' => 1];
-			$this->actionCards->createCards($actionCards, $faction);
-		}
-//
 		for ($type = 1; $type <= 11; $type++)
 		{
 			$actionCards = [];
@@ -116,13 +109,13 @@ trait gameStates
 			return $this->gamestate->nextState('settlementChoice');
 		}
 //
-		foreach (Factions::getAll() as $faction => $player_id)
+		foreach (Factions::getAllDatas() as $faction => $player_id)
 		{
-			$this->actionCards->shuffle($player_id);
+			$this->actionCards->shuffle($faction);
 //* -------------------------------------------------------------------------------------------------------- */
-			self::notifyAllPlayers('msg', '<B>${faction}</B> draws 5 cards', ['faction' => $this->FACTIONS[$faction], 'i18n' => ['faction']]);
+			self::notifyAllPlayers('msg', clienttranslate('<B>${player_name}</B> draws 5 cards'), ['player_name' => self::getCurrentPlayerName()]);
 //* -------------------------------------------------------------------------------------------------------- */
-			foreach ($this->actionCards->pickCards(5, $player_id, $player_id) as $card)
+			foreach ($this->actionCards->pickCards(5, $faction, $player_id) as $card)
 //* -------------------------------------------------------------------------------------------------------- */
 				self::notifyPlayer($player_id, 'drawCard', '', ['card' => $card]);
 //* -------------------------------------------------------------------------------------------------------- */
@@ -132,6 +125,16 @@ trait gameStates
 	}
 	function stStartOfTurn()
 	{
-
+		$player_id = intval($this->getActivePlayerId());
+		$faction = Factions::getFaction($player_id);
+//* -------------------------------------------------------------------------------------------------------- */
+		self::notifyAllPlayers('updateTurn', '<span class="ALTAYphase">${faction} <span>${LOG}</span></span>', ['i18n' => ['LOG'], 'LOG' => ['log' => clienttranslate('${player_name}\'s turn'), 'args' => ['player_name' => self::getCurrentPlayerName()]], 'faction' => $faction]);
+//* -------------------------------------------------------------------------------------------------------- */
+		$this->gamestate->nextState('gameTurn');
+	}
+	function stEndOfTurn()
+	{
+		$this->activeNextPlayer();
+		$this->gamestate->nextState('startOfTurn');
 	}
 }

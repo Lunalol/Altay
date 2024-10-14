@@ -42,4 +42,28 @@ class Board extends APP_GameClass
 		21 => [8, 10, 5, 17],
 		22 => [4, 11, 16, 17],
 	];
+//
+	static function settlements(string $faction): array
+	{
+		$locations = [];
+//
+		foreach (array_keys(self::REGIONS) as $location)
+		{
+			$tokens = Tokens::getAt($location);
+//
+			$self[$location] = sizeof(array_filter($tokens, fn($token) => $token['type'] === $faction));
+			$ennemy[$location] = sizeof(array_filter($tokens, fn($token) => $token['type'] !== $faction));
+		}
+//
+		foreach (array_keys(self::REGIONS) as $location)
+		{
+			if ($self[$location] > 0 && $ennemy[$location] === 0)
+			{
+				if ($self[$location] < 4) $locations[] = $location;
+				foreach (self::ADJACENCY[$location] as $next_location) if (!Markers::getAt($next_location) && $self[$next_location] === 0 && $ennemy[$next_location] === 0) $locations[] = $next_location;
+			}
+		}
+//
+		return $locations;
+	}
 }

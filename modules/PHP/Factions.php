@@ -14,10 +14,6 @@ class Factions extends APP_GameClass
 	}
 	static function getAllDatas(): array
 	{
-		return self::getCollectionFromDB("SELECT faction,player_id FROM factions");
-	}
-	static function getAll(): array
-	{
 		return self::getCollectionFromDB("SELECT faction,player_id FROM factions", true);
 	}
 	static function get(int $player_id): string
@@ -27,6 +23,10 @@ class Factions extends APP_GameClass
 	static function getPlayer(string $faction): int
 	{
 		return self::getUniqueValueFromDB("SELECT player_id FROM factions WHERE faction = '$faction'");
+	}
+	static function getFaction(int $player_id): string
+	{
+		return self::getUniqueValueFromDB("SELECT faction FROM factions WHERE player_id = $player_id");
 	}
 	static function getStatus(string $faction, string $status)
 	{

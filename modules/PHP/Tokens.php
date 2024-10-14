@@ -24,4 +24,9 @@ class Tokens extends APP_GameClass
 	{
 		return self::getObjectListFromDB("SELECT * FROM tokens WHERE id = $id")[0];
 	}
+	static function getAt(string $location, string|null $type = null): array
+	{
+		if ($type) return self::getCollectionFromDB("SELECT * FROM tokens WHERE location = '$location' WHERE type = '$type'");
+		return self::getCollectionFromDB("SELECT * FROM tokens WHERE location = '$location' ORDER BY type");
+	}
 }

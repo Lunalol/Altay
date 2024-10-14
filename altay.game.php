@@ -39,6 +39,15 @@ class Altay extends Table
 		$this->actionCards = self::getNew("module.common.deck");
 		$this->actionCards->init("actionCards");
 //
+		$this->actionCards->autoreshuffle = true;
+//		$this->actionCards->autoreshuffle_trigger = ['obj' => $this, 'method' => 'deckAutoReshuffle'];
+		$this->actionCards->autoreshuffle_custom = [
+			'EARTHFOLK' => 'discard/EARTHFOLK',
+			'ELVENFOLK' => 'discard/ELVENFOLK',
+			'FIREFOLK' => 'discard/FIREFOLK',
+			'SMALLFOLK' => 'discard/SMALLFOLK'
+		];
+//
 		$this->achievementCards = self::getNew("module.common.deck");
 		$this->achievementCards->init("achievementCards");
 	}
@@ -71,6 +80,8 @@ class Altay extends Table
 		$result["achievementCards"]["level-1"] = $this->achievementCards->getCardsInLocation("level-1");
 		$result["achievementCards"]["level-2"] = $this->achievementCards->getCardsInLocation("level-2");
 		$result["achievementCards"]["level-3"] = $this->achievementCards->getCardsInLocation("level-3");
+//
+		$result['playOnTable'] = $this->actionCards->getCardsInLocation("playOnTable");
 //
 		$result['factions'] = Factions::getAllDatas();
 		$result['tokens'] = Tokens::getAllDatas();
