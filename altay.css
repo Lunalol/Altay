@@ -176,7 +176,7 @@ div,img {
 	z-index: 0;
 }
 
-.ALTAYtoken {
+.ALTAYsettlement {
 	width: 8%;
 	aspect-ratio: 295/390;
 	background-size: 400%;
@@ -185,24 +185,24 @@ div,img {
 	transition: transform .25s, box-shadow .25s;
 	z-index: 2;
 }
-.ALTAYtoken:hover {
+.ALTAYsettlement:hover {
 	transition: transform .5s, box-shadow .5s;
 	box-shadow: 0px 0px 10px 5px black;
 }
-.ALTAYtoken:focus {
+.ALTAYsettlement:focus {
 	transform: translateY(-50%);
 	transition: transform .5s, box-shadow .5s;
 }
-.ALTAYtoken[data-type='EARTHFOLK'] {
+.ALTAYsettlement[data-type='EARTHFOLK'] {
 	background-position-x: 0%;
 }
-.ALTAYtoken[data-type='ELVENFOLK'] {
+.ALTAYsettlement[data-type='ELVENFOLK'] {
 	background-position-x: 33.33%;
 }
-.ALTAYtoken[data-type='FIREFOLK'] {
+.ALTAYsettlement[data-type='FIREFOLK'] {
 	background-position-x: 66.66%;
 }
-.ALTAYtoken[data-type='SMALLFOLK'] {
+.ALTAYsettlement[data-type='SMALLFOLK'] {
 	background-position-x: 100%;
 }
 
@@ -272,6 +272,7 @@ div,img {
 
 .ALTAYresources {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 }
 
@@ -279,58 +280,19 @@ div,img {
 	position: relative;
 	height: 25px;
 	margin: 5px;
+	filter: drop-shadow(2px 2px 2px black);
 }
 .ALTAYresource.ALTAYselected {
 	box-shadow: 0px 0px 5px 5px red;
     border-radius: 25%;
 }
 
-.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='6']>.ALTAYresource:first-child,.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='7']>.ALTAYresource:first-child {
+.ALTAYactionCard>.ALTAYresource:first-child {
 	position: absolute;
 	top: 62%;
 	left: 20%;
 }
-.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='6']>.ALTAYresource:last-child,.ALTAYactionCard[data-type='EARTHFOLK'][data-type_arg='7']>.ALTAYresource:last-child {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='6']>.ALTAYresource,.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='7']>.ALTAYresource {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='8']>.ALTAYresource:first-child {
-	position: absolute;
-	top: 62%;
-	left: 20%;
-}
-.ALTAYactionCard[data-type='ELVENFOLK'][data-type_arg='8']>.ALTAYresource:last-child {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='6']>.ALTAYresource:first-child,.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='5']>.ALTAYresource:first-child {
-	position: absolute;
-	top: 62%;
-	left: 20%;
-}
-.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='6']>.ALTAYresource:last-child,.ALTAYactionCard[data-type='FIREFOLK'][data-type_arg='5']>.ALTAYresource:last-child {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='7']>.ALTAYresource {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='8']>.ALTAYresource:first-child {
-	position: absolute;
-	top: 62%;
-	left: 20%;
-}
-.ALTAYactionCard[data-type='SMALLFOLK'][data-type_arg='8']>.ALTAYresource:last-child {
+.ALTAYactionCard>.ALTAYresource:last-child {
 	position: absolute;
 	top: 62%;
 	left: 44%;
