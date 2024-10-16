@@ -31,6 +31,12 @@ class Settlements extends \APP_GameClass
 		if ($faction) return self::getCollectionFromDB("SELECT * FROM settlements WHERE location = '$location' WHERE faction = '$faction'");
 		return self::getCollectionFromDB("SELECT * FROM settlements WHERE location = '$location' ORDER BY faction");
 	}
+	static function getTerritories($faction)
+	{
+		$territories = [FARMLAND => 0, FOREST => 0, HILL => 0, MOUNTAIN => 0];
+		foreach (self::getObjectListFromDB("SELECT DISTINCT location FROM settlements WHERE faction = '$faction'", true) as $location) $territories[Board::REGIONS[$location]]++;
+		return $territories;
+	}
 	static function settlements(string $faction): array
 	{
 		$locations = [];
