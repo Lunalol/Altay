@@ -1,1 +1,44 @@
-{}
+{
+	"100": {
+		"name": "Animation speed",
+		"needReload": false,
+		"default": 1,
+		"values": [
+			{
+				"name": "Slow"
+			},
+			{
+				"name": "Normal"
+			},
+			{
+				"name": "Fast"
+			}
+		]
+	},
+	"101": {
+		"name": "Play resource cards automatically",
+		"needReload": false,
+		"default": 0,
+		"values": [
+			{
+				"name": "No"
+			},
+			{
+				"name": "Yes"
+			}
+		]
+	},
+	"102": {
+		"name": "Play costs automatically",
+		"needReload": false,
+		"default": 0,
+		"values": [
+			{
+				"name": "No"
+			},
+			{
+				"name": "Yes"
+			}
+		]
+	}
+}

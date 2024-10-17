@@ -65,9 +65,10 @@ $machinestates = [
 	110 => [
 		'name' => 'gameTurn',
 		'description' => clienttranslate('${actplayer} must play cards in hand'),
-		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
+//		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
+		'descriptionmyturn' => '',
 		'type' => 'activeplayer',
-		'possibleactions' => ['actPlay', 'actEffect', 'actPass'],
+		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actEffect', 'actPass'],
 		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'pass' => 190]
 	],
 	120 => [
