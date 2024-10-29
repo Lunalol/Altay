@@ -2,9 +2,9 @@
 <div id="ALTAYplayArea">
 	<div id="ALTAYboard">
 	</div>
-	<div id="ALTAYactionCardDisplay">
+	<div id="ALTAYactionCardDisplay" class="ALTAYactionCardDisplay">
 	</div>
-	<div id="ALTAYachievementCardDisplay">
+	<div id="ALTAYachievementCardDisplay" class="ALTAYachievementCardDisplay">
 	</div>
 	<div id='ALTAYplayerHand' class='ALTAYplayerHand'></div>
 </div>

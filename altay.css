@@ -1,10 +1,15 @@
-div,img {
+/* <editor-fold defaultstate="collapsed" desc="BGA"> */
+#overall-content div,img
+{
 	user-select: none;
 }
-#topbar, #page-title, .whiteblock, .roundedbox, .pageheader, .pagesection, .pagesection h2 {
+#topbar, #page-title, .whiteblock, .roundedbox, .pageheader, .pagesection, .pagesection h2
+{
 }
-
-.ALTAYphase {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="LOGS"> */
+.ALTAYphase
+{
 	font-family: cursive;
 	display: flex;
 	align-items: center;
@@ -16,7 +21,8 @@ div,img {
     font-size: 14pt;
     font-weight: bold;
 }
-.ALTAYsubPhase {
+.ALTAYsubPhase
+{
 	font-family: cursive;
 	display: flex;
 	align-items: center;
@@ -28,18 +34,23 @@ div,img {
     font-size: 9pt;
     font-weight: bold;
 }
-
-#ALTAYplayArea div {
-	/*	border: 1px solid red;*/
+.log .ALTAYresource
+{
+	height: 20px;
 }
-#ALTAYplayArea {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="PLAYAREA"> */
+#ALTAYplayArea
+{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	margin: 5px;
 }
-
-#ALTAYboard {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="BOARD"> */
+#ALTAYboard
+{
 	position: relative;
 	aspect-ratio: 2835/2008;
 	background-image: url('img/board.jpg');
@@ -50,31 +61,34 @@ div,img {
 	width: 80%;
 	max-width: 100vmin;
 }
-
-#ALTAYachievementCardDisplay {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="ACHIEVEMENTS"> */
+#ALTAYachievementCardDisplay
+{
 	display: grid;
-	grid-template-columns: [level] 175px repeat(3, [cards] 175px);
+	grid-template-columns: [level] 200px repeat(3, [cards] 200px);
 	grid-template-rows: [level-1] 1fr [level-2] 1fr [level-3] 1fr;
 	justify-content: center;
 	margin: 5px 0px;
 }
-#ALTAYachievementCardDisplay>div>.ALTAYachievementCards:not(:first-child) {
+#ALTAYachievementCardDisplay>div>.ALTAYachievementCards:not(:first-child)
+{
 	margin-top: -115px;
 }
-
-#ALTAYactionCardDisplay {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
-	margin: 5px 0px;
-	width: 100%;
+.ALTAYachievementCardHolder {
+	background-color: #40404040;
+	margin: 2px;
+	border-radius: 10px;
 }
-#ALTAYactionCardDisplay>.ALTAYactionCards {
-	height: 150px;
-	border-radius: 5px;
+.ALTAYachievementCardHolder>.ALTAYachievementCards:hover
+{
+	filter: contrast(200%);
+	z-index: 1;
 }
-
-.ALTAYachievementCards {
+.ALTAYachievementCards
+{
+	container-type: size;
+	position: relative;
 	aspect-ratio: 500/358;
 	background-image: url('img/achievementCards.jpg');
 	background-size: 1100%;
@@ -82,27 +96,75 @@ div,img {
 	border: 1px solid white;
 	margin: 2px;
 }
-.ALTAYachievementCards.ALTAYlevel-1 {
+.ALTAYachievementCardTitle {
+	position: absolute;
+	left: 10cqw;
+	right:65cqw;
+	top:0cqw;
+	font-family: fantasy;
+	font-size: 6cqh;
+	line-height: 15cqh;
+	letter-spacing: -1px;
+	text-wrap: nowrap;
+}
+.ALTAYachievementCardEffect {
+	position: absolute;
+	text-align: center;
+	font-family: serif;
+	font-size: 6cqh;
+	line-height: 6cqh;
+	letter-spacing: -1px;
+	text-wrap-style: balance;
+}
+.ALTAYachievementCards[data-type='1']
+{
 	background-position-y: 0%;
 }
-.ALTAYachievementCards.ALTAYlevel-2 {
+.ALTAYachievementCards[data-type='2']
+{
 	background-position-y: 50%;
 }
-.ALTAYachievementCards.ALTAYlevel-3 {
+.ALTAYachievementCards[data-type='3']
+{
 	background-position-y: 100%;
 }
-.ALTAYachievementCardHolder>.ALTAYachievementCards:hover {
-	filter: contrast(200%);
-	z-index: 1;
+.dijitTooltipContainer .ALTAYachievementCards
+{
+	width:400px;
 }
-
-.ALTAYactionCardHolder {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="ACTIONCARDS"> */
+.ALTAYactionCardDisplay
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin: 5px 0px;
+	width: 100%;
+}
+.ALTAYactionDisplay>.ALTAYactionCards
+{
+	width:100px;
+}
+.ALTAYactionCardDisplay>.ALTAYactionCards
+{
+	height: 150px;
+	border-radius: 5px;
+}
+.ALTAYactionCardHolder
+{
 	flex: 1 1 auto;
 	background-color: #40404040;
 	margin: 2px;
 	border-radius: 10px;
 }
-.ALTAYactionCards {
+.ALTAYactionCardHolder>.ALTAYactionCard:not(:first-child)
+{
+	margin-top: -120%;
+}
+.ALTAYactionCards
+{
+	container-type: size;
 	position: relative;
 	aspect-ratio: 300/419;
 	background-image: url('img/actionCards.jpg');
@@ -112,36 +174,58 @@ div,img {
 	border-radius: 5px;
 	margin: 2px;
 }
-.ALTAYactionCard {
+.ALTAYactionCardTitle {
+	position: absolute;
+	left: 15cqw;
+	right:52cqw;
+	top:0cqw;
+	font-family: fantasy;
+	font-size: 5cqh;
+	line-height: 10cqh;
+	letter-spacing: -1px;
+	text-wrap: nowrap;
+}
+.ALTAYactionCardEffect {
+	position: absolute;
+	text-align: center;
+	font-family: serif;
+	font-size: 5cqh;
+	line-height: 6cqh;
+	letter-spacing: -1px;
+	text-wrap-style: balance;
+}
+.ALTAYactionCard
+{
 	background-position-y: 100%;
 }
-.ALTAYactionCard.EARTHFOLK {
+.ALTAYactionCard.EARTHFOLK
+{
 	background-position-y: 0%;
 }
-.ALTAYactionCard.ELVENFOLK {
+.ALTAYactionCard.ELVENFOLK
+{
 	background-position-y: 25%;
 }
-.ALTAYactionCard.FIREFOLK {
+.ALTAYactionCard.FIREFOLK
+{
 	background-position-y: 50%;
 }
-.ALTAYactionCard.SMALLFOLK {
+.ALTAYactionCard.SMALLFOLK
+{
 	background-position-y: 75%;
-}
-.ALTAYactionCardHolder>.ALTAYactionCard:not(:first-child) {
-	margin-top: -120%;
 }
 .ALTAYactionCard:hover {
 	filter: contrast(200%);
 	z-index: 1;
 }
-.ALTAYactionDisplay>.ALTAYactionCards  {
-	width:100px;
-}
-.dijitTooltipContainer .ALTAYactionCards  {
+.dijitTooltipContainer .ALTAYactionCards
+{
 	width:250px;
 }
-
-.ALTAYplayerHand {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="PLAYERHAND"> */
+.ALTAYplayerHand
+{
 	position: fixed;
 	bottom: -240px;
 	display:flex;
@@ -154,76 +238,119 @@ div,img {
 	box-sizing: border-box;
 	z-index: 25;
 }
-.ALTAYplayerHand.ALTAYselected,.ALTAYplayerHand:hover {
+.ALTAYplayerHand.ALTAYselected,.ALTAYplayerHand:hover
+{
 	bottom: 0px;
 	transition:bottom .5s;
 }
-.ALTAYplayerHand>.ALTAYactionCards  {
+.ALTAYplayerHand>.ALTAYactionCards
+{
 	height: 250px;
 	transition:transform 1s, box-shadow .5s;
 }
-.ALTAYplayerHand>.ALTAYactionCards:nth-child(even) {
+.ALTAYplayerHand>.ALTAYactionCards:nth-child(even)
+{
 	transform:rotate(10deg);
 }
-.ALTAYplayerHand>.ALTAYactionCards:nth-child(odd) {
+.ALTAYplayerHand>.ALTAYactionCards:nth-child(odd)
+{
 	transform:rotate(-10deg);
 }
 .ALTAYplayerHand>.ALTAYactionCards:hover {
-	transform:scale(125%);
+	transform:scale(110%);
 	transition:transform 1s, box-shadow .5s;
 	z-index:20;
 }
-.ALTAYplayerHand>.ALTAYactionCards.ALTAYselectable {
-	transform:scale(150%);
+.ALTAYplayerHand>.ALTAYactionCards.ALTAYselectable
+{
+	transform:scale(120%);
 	box-shadow:0px 0px 5px 10px #ffffff40;
 	transition:transform 1s, box-shadow .5s;
 	z-index:5;
 }
-.ALTAYplayerHand>.ALTAYactionCards.ALTAYselected {
-	transform:scale(200%);
+.ALTAYplayerHand>.ALTAYactionCards.ALTAYselected
+{
+	transform:scale(125%);
 	box-shadow:0px 0px 5px 10px #ffffffff;
 	transition:transform 1s, box-shadow .5s;
 	z-index:10;
 }
-
-.ALTAYmarker {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="MARKERS"> */
+.ALTAYmarker
+{
 	width: 5%;
 	background-image: url('img/markers.png');
 	transform-origin: center;
 	z-index: 0;
 }
-
-.ALTAYsettlement {
+.ALTAYmarker:hover
+{
+	z-index: 10;
+	box-shadow: 0px 0px 10px 5px black;
+	transition: transform .5s, box-shadow .5s;
+}
+.ALTAYsettlementMarkerContainer
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	margin: 5px;
+}
+.ALTAYsettlementMarkerContainer>.ALTAYsettlement
+{
+	width: 40px;
+	margin-right: -30px;
+}
+.ALTAYsettlement
+{
 	width: 8%;
 	aspect-ratio: 295/390;
 	background-size: 400%;
 	background-image: url('img/tokens.png');
 	transform-origin: center;
 	transition: transform .25s, box-shadow .25s;
-	z-index: 2;
 }
-.ALTAYsettlement:hover {
+#ALTAYboard>.ALTAYsettlement:hover
+{
 	transition: transform .5s, box-shadow .5s;
 	box-shadow: 0px 0px 10px 5px black;
 }
-.ALTAYsettlement:focus {
+#ALTAYboard>.ALTAYsettlement:focus
+{
 	transform: translateY(-50%);
 	transition: transform .5s, box-shadow .5s;
 }
-.ALTAYsettlement[data-type='EARTHFOLK'] {
+.ALTAYsettlement[data-type='EARTHFOLK']
+{
 	background-position-x: 0%;
 }
-.ALTAYsettlement[data-type='ELVENFOLK'] {
+.ALTAYsettlement[data-type='ELVENFOLK']
+{
 	background-position-x: 33.33%;
 }
-.ALTAYsettlement[data-type='FIREFOLK'] {
+.ALTAYsettlement[data-type='FIREFOLK']
+{
 	background-position-x: 66.66%;
 }
-.ALTAYsettlement[data-type='SMALLFOLK'] {
+.ALTAYsettlement[data-type='SMALLFOLK']
+{
 	background-position-x: 100%;
 }
-
-.ALTAYconquestMarker {
+.ALTAYconquestMarkerContainer
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 5px;
+}
+.ALTAYconquestMarkerContainer>.ALTAYconquestMarker
+{
+	width: 25px;
+	transform: none;
+}
+.ALTAYconquestMarker
+{
 	aspect-ratio: 1;
 	background-size: 1100%;
 	transform: rotate(-45deg);
@@ -232,107 +359,185 @@ div,img {
 	box-shadow: 0px 0px 5px 1px black;
 	z-index: 1;
 }
-.ALTAYmarker[data-type='x1'] {
+.ALTAYconquestMarker:focus
+{
+	transform: translateY(-50%) rotate(-45deg);
+	transition: transform .5s, box-shadow .5s;
+}
+.ALTAYmarker[data-type='x1']
+{
 	background-position-x: 0%;
 }
-.ALTAYmarker[data-type='x2food'] {
+.ALTAYmarker[data-type='x2FOOD']
+{
 	background-position-x: 10%;
 }
-.ALTAYmarker[data-type='x2wood'] {
+.ALTAYmarker[data-type='x2WOOD']
+{
 	background-position-x: 20%;
 }
-.ALTAYmarker[data-type='x2metal'] {
+.ALTAYmarker[data-type='x2METAL']
+{
 	background-position-x: 30%;
 }
-.ALTAYmarker[data-type='x2stone'] {
+.ALTAYmarker[data-type='x2STONE']
+{
 	background-position-x: 40%;
 }
-.ALTAYmarker[data-type='x3wood'] {
+.ALTAYmarker[data-type='x3WOOD']
+{
 	background-position-x: 50%;
 }
-.ALTAYmarker[data-type='x3metal'] {
+.ALTAYmarker[data-type='x3METAL']
+{
 	background-position-x: 60%;
 }
-.ALTAYmarker[data-type='x3stone'] {
+.ALTAYmarker[data-type='x3STONE']
+{
 	background-position-x: 70%;
 }
-.ALTAYmarker[data-type='VP'] {
+.ALTAYmarker[data-type='VP']
+{
 	aspect-ratio: 1/2;
 	background-size: 2200%;
 	background-position-x: 100%;
 	transform: translate(40%,40%);
 }
-.ALTAYmarker:hover {
-	z-index: 10;
-	box-shadow: 0px 0px 10px 5px black;
-	transition: transform .5s, box-shadow .5s;
-}
-.ALTAYconquestMarker:focus {
-	transform: translateY(-50%) rotate(-45deg);
-	transition: transform .5s, box-shadow .5s;
-}
-
-.ALTAYregion {
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="REGIONS"> */
+.ALTAYregion
+{
 	width: 20%;
 	height: 25%;
 	/*	aspect-ratio: 1;*/
 	border-radius: 50%;
 	pointer-events: none;
 }
-.ALTAYregion.ALTAYselectable {
+.ALTAYregion.ALTAYselectable
+{
 	box-shadow: 0px 0px 50px 50px black;
 	pointer-events: all;
+}
+.ALTAYregion.ALTAYselected
+{
+	filter: invert(1);
 }
 .ALTAYdisabled {
 	pointer-events: none;
 }
-
-.ALTAYresources {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-}
-
-.ALTAYresource {
-	position: relative;
-	height: 25px;
-	margin: 0px 5px;
-	vertical-align: middle;
-	filter: drop-shadow(2px 2px 2px black);
-}
-.log .ALTAYresource
-{
-	height: 20px;
-}
-
-.ALTAYresource.ALTAYselected {
-	box-shadow: 0px 0px 5px 5px red;
-    border-radius: 25%;
-}
-
-.ALTAYactionCard>.ALTAYresource:first-child {
-	position: absolute;
-	top: 62%;
-	left: 20%;
-}
-.ALTAYactionCard>.ALTAYresource:last-child {
-	position: absolute;
-	top: 62%;
-	left: 44%;
-}
-
-.ALTAYplayOnTable {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
-}
-.ALTAYplayOnTable>.ALTAYactionCards {
-	width: 100px;
-}
-
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="RESSOURCES"> */
 .ALTAYresourceContainer {
 	display: flex;
 	height: 40px;
 	justify-content: center;
 	align-items: center;
+}
+.ALTAYresources
+{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.ALTAYresource,.ALTAYicon
+{
+	position: relative;
+	height: 25px;
+	margin: 0px 3px;
+	vertical-align: middle;
+	filter: drop-shadow(2px 2px 2px black);
+}
+.ALTAYactionCard>.ALTAYresource
+{
+	height: 20%;
+}
+.ALTAYachievementCards>.ALTAYresource
+{
+	height: 25%;
+}
+.ALTAYactionCardEffect>.ALTAYresource,.ALTAYactionCardEffect>.ALTAYicon
+{
+	height: 6cqh;
+}
+.ALTAYachievementCardEffect>.ALTAYresource,.ALTAYachievementCardEffect>.ALTAYicon
+{
+	height: 8cqh;
+}
+.ALTAYresource.ALTAYselected
+{
+	box-shadow: 0px 0px 5px 5px red;
+    border-radius: 25%;
+}
+.ALTAYactionCard>.ALTAYresource:first-of-type {
+	position: absolute;
+	top: 62%;
+	left: 20%;
+}
+.ALTAYactionCard>.ALTAYresource:last-of-type {
+	position: absolute;
+	top: 62%;
+	left: 44%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(1) {
+	position: absolute;
+	top: 25%;
+	left: 5%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(2) {
+	position: absolute;
+	top: 25%;
+	left: 20%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(3) {
+	position: absolute;
+	top: 25%;
+	left: 35%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(4) {
+	position: absolute;
+	top: 25%;
+	left: 50%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(5) {
+	position: absolute;
+	top: 25%;
+	left: 65%;
+}
+.ALTAYachievementCards>.ALTAYresource:nth-of-type(6) {
+	position: absolute;
+	top: 25%;
+	left: 80%;
+}
+/* </editor-fold> */
+/* <editor-fold defaultstate="collapsed" desc="FACTIONS"> */
+.ALTAYfaction
+{
+	margin:2px;
+	height:50px;
+	vertical-align:middle;
+	transition: filter .25s;
+	filter: drop-shadow(2px 2px 2px black);
+}
+/* </editor-fold> */
+
+.ALTAYplayOnTable
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin: 5px;
+}
+.ALTAYplayOnTable>.ALTAYactionCards {
+	width: 75px;
+}
+.ALTAYplayOnTable>.ALTAYachievementCards {
+	width: 100px;
+}
+
+.ALTAYplayer
+{
+	background-color: #ffffff40;
+	border-radius: 5px;
+	margin: 0px 5px;
+	padding: 2px;
 }

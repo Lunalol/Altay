@@ -7,7 +7,7 @@ $this->FACTIONS = [
 	'SMALLFOLK' => clienttranslate('Smallfolk'),
 ];
 //
-$this->ACTIONSCARDS = [
+$this->ACTIONCARDS = [
 //
 	'EARTHFOLK' => [
 //
@@ -163,4 +163,33 @@ $this->ACTIONSCARDS = [
 	86 => ['VP' => 0, 'title' => clienttranslate('City'), 'cost' => ['WOOD', 'WOOD'], 'variants' => [clienttranslate('Collect ${FOOD} ${WOOD} to build ${SETTLEMENT} ${SETTLEMENT}')]],
 	87 => ['VP' => 0, 'title' => clienttranslate('City'), 'cost' => ['WOOD', 'WOOD'], 'variants' => [clienttranslate('Collect ${FOOD} ${WOOD} to build ${SETTLEMENT} ${SETTLEMENT}')]],
 	88 => ['VP' => 0, 'title' => clienttranslate('City'), 'cost' => ['WOOD', 'WOOD'], 'variants' => [clienttranslate('Collect ${FOOD} ${WOOD} to build ${SETTLEMENT} ${SETTLEMENT}')]],
+];
+//
+$this->ACHIEVEMENTS = [
+	1 => [
+		1 => ['title' => clienttranslate('Engineering'), 'cost' => ['WOOD', 'WOOD', 'STONE', 'STONE'], clienttranslate('${ONCEPERTURN} Trash 1 card to draw 1 card')],
+		2 => ['title' => clienttranslate('Masonry'), 'cost' => ['FOOD', 'FOOD', 'STONE', 'STONE'], clienttranslate('${INSTANT} Place ${SETTLEMENT}')],
+		3 => ['title' => clienttranslate('Mathematics'), 'cost' => ['METAL', 'METAL', 'STONE', 'STONE'], clienttranslate('${ONCEPERTURN} Discard 1 card to draw 1 card')],
+		4 => ['title' => clienttranslate('Strategy'), 'cost' => ['FOOD', 'FOOD', 'METAL', 'METAL'], clienttranslate('${CONTINUOUS} Add ${DEFENSE} when defending')],
+		5 => ['title' => clienttranslate('Writing'), 'cost' => ['FOOD', 'FOOD', 'WOOD', 'WOOD'], clienttranslate('${ENDOFTURN} Archive 1 unused card here, if there is not one already')],
+	],
+	2 => [
+		1 => ['title' => clienttranslate('Commerce'), 'cost' => ['FOOD', 'WOOD', 'METAL', 'STONE', 'CULTURE'], clienttranslate('${ONCEPERTURN} Spend ${WILD} to produce ${WILD}')],
+		2 => ['title' => clienttranslate('Government'), 'cost' => ['METAL', 'STONE', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('${ENDOFTURN} Draw 1 additional card')],
+		3 => ['title' => clienttranslate('Leadership'), 'cost' => ['METAL', 'METAL', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('${CONTINUOUS} Add ${ATTACK} when attacking')],
+		4 => ['title' => clienttranslate('Philosophy'), 'cost' => ['CULTURE', 'CULTURE', 'CULTURE'], clienttranslate('${ONCEPERTURN} Produce ${CULTURE}')],
+		5 => ['title' => clienttranslate('Religion'), 'cost' => ['FOOD', 'FOOD', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('${ONCEPERTURN} Resettle one of your ${SETTLEMENT} to an adjacent territory')],
+	],
+	3 => [
+		1 => ['title' => clienttranslate('Academy'), 'cost' => ['STONE', 'STONE', 'STONE', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each Technology you completed')],
+		2 => ['title' => clienttranslate('Amphitheatre'), 'cost' => ['FOOD', 'WOOD', 'METAL', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each 4 cards in your deck')],
+		3 => ['title' => clienttranslate('Aqueducts'), 'cost' => ['WOOD', 'METAL', 'STONE', 'CULTURE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each of your territories with 2 ${SETTLEMENT} or more')],
+		4 => ['title' => clienttranslate('Ark'), 'cost' => ['WOOD', 'WOOD', 'WOOD', 'METAL', 'METAL', 'CULTURE'], clienttranslate('Gain 1 VP for each of your territories with only 1 ${SETTLEMENT}')],
+		5 => ['title' => clienttranslate('Colossus'), 'cost' => ['CULTURE', 'CULTURE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each VP card in your deck')],
+		6 => ['title' => clienttranslate('Great Wall'), 'cost' => ['METAL', 'METAL', 'STONE', 'STONE', 'STONE', 'CULTURE'], clienttranslate('Gain 1 VP for each of your territories adjacent to an opponent’s territory')],
+		7 => ['title' => clienttranslate('Highways'), 'cost' => ['WOOD', 'WOOD', 'WOOD', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('Choose a type of territory. Gain 1 VP for each territory of that type you control')],
+		8 => ['title' => clienttranslate('Mausoleum'), 'cost' => ['WMS', 'WMS', 'WMS', 'CULTURE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each 2 starting cards in your deck')],
+		9 => ['title' => clienttranslate('Siege Engines'), 'cost' => ['METAL', 'METAL', 'METAL', 'STONE', 'CULTURE', 'CULTURE'], clienttranslate('Gain 1 VP for each opponent ${SETTLEMENT} you captured')],
+		10 => ['title' => clienttranslate('Triumphal Arch'), 'cost' => ['METAL', 'METAL', 'METAL', 'STONE', 'STONE', 'CULTURE'], clienttranslate('Gain 1 VP, plus 1 VP for each ${CONQUEST} ${CONQUEST} you captured')],
+	],
 ];

@@ -16,7 +16,9 @@ $gameinfos = [
 	'estimated_duration' => 60,
 	'is_beta' => 1,
 //
-	'player_colors' => [],
+	'db_undo_support' => true,
+//
+	'player_colors' => ['47a34b', 'ebb41b', '00a7d2', 'e12129'],
 	'favorite_colors_support' => true,
 //
 	'game_interface_width' => ['min' => 1022,],
