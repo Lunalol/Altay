@@ -40,6 +40,7 @@ $machinestates = [
 		'descriptionmyturn' => clienttranslate('${you} must choose one of the farmland territories'),
 		'type' => 'activeplayer',
 		'args' => 'argsSettlementChoice',
+		'action' => 'stSettlementChoice',
 		'possibleactions' => ['actSettlementChoice'],
 		'transitions' => ['continue' => 35]
 	],
@@ -68,7 +69,7 @@ $machinestates = [
 //		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
 		'descriptionmyturn' => '',
 		'type' => 'activeplayer',
-		'args' => 'argsCombatLocations',
+		'args' => 'argsGameTurn',
 		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
 		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'pass' => 190]
 	],

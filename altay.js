@@ -15,6 +15,8 @@ const FAST = 2;
 //
 const DELAYS = {[SLOW]: 1000, [NORMAL]: 500, [FAST]: 250};
 const COLORS = {ELVENFOLK: '#47a34b', EARTHFOLK: '#ebb41b', SMALLFOLK: '#00a7d2', FIREFOLK: '#e12129'};
+const SORT = {FOOD: 0, WOOD: 1, METAL: 2, STONE: 3, CULTURE: 4};
+//
 define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 	g_gamethemeurl + "modules/JavaScript/constants.js",
 	g_gamethemeurl + "modules/JavaScript/cards.js"
@@ -60,7 +62,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYfaction.FIREFOLK", showDelay: 500, hideDelay: 0, getContent: () => _('FIREFOLK')});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYfaction.SMALLFOLK", showDelay: 500, hideDelay: 0, getContent: () => _('SMALLFOLK')});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYconquestMarker", showDelay: 500, hideDelay: 0, getContent: (node) => _('Conquest marker')});
+			new dijit.Tooltip({connectId: "ebd-body", selector: ":not(.ALTAYsettlementMarkerContainer)>.ALTAYsettlement", showDelay: 500, hideDelay: 0, getContent: (node) => _('Settlement')});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYresource", showDelay: 500, hideDelay: 0, getContent: (node) => _(node.dataset.resource)});
+			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYicon", showDelay: 500, hideDelay: 0, getContent: (node) => _(node.dataset.icon)});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ":not(#ALTAYplayerHand)>.ALTAYactionCard", showDelay: 500, hideDelay: 0, getContent: (node) => actionCard({id: 0, type: node.dataset.type, type_arg: node.dataset.type_arg})});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYachievementCards", showDelay: 500, hideDelay: 0, getContent: (node) => achievementCard({id: 0, type: node.dataset.type, type_arg: node.dataset.type_arg})});
 //
@@ -106,6 +110,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 // Board
 //
 			this.board = $('ALTAYboard');
+			if (gamedatas.setup === 2) dojo.addClass(this.board, 'ALTAY2players');
+			if (gamedatas.setup === 3) dojo.addClass(this.board, 'ALTAY3players');
 //
 			for (let [location, [X, Y]] of Object.entries(BOARD))
 			{
@@ -119,15 +125,19 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 						switch (this.gamedatas.gamestate.name)
 						{
 							case 'settlementChoice':
-								return this.bgaPerformAction('actSettlementChoice', {location: location}).then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'));
+								return this.bgaPerformAction('actSettlementChoice', {location: location})
+										.then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'))
+										.catch((e) => console.log(e));
 							case 'placeSettlement':
-								return this.bgaPerformAction('actPlaceSettlement', {location: location}).then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'));
+								return this.bgaPerformAction('actPlaceSettlement', {location: location})
+										.then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'))
+										.catch((e) => console.log(e));
 							case 'combat':
-								if (location in this.gamedatas.gamestate.args)
+								if (location in this.gamedatas.gamestate.args.combatLocations)
 								{
 									dojo.query('.ALTAYregion.ALTAYselectable', this.board).removeClass('ALTAYselectable');
 									dojo.addClass(node, 'ALTAYselectable ALTAYselected');
-									for (let l of this.gamedatas.gamestate.args[location]) dojo.addClass(`ALTAYregion-${l}`, 'ALTAYselectable');
+									for (let l of this.gamedatas.gamestate.args.combatLocations[location]) dojo.addClass(`ALTAYregion-${l}`, 'ALTAYselectable');
 								}
 								else
 								{
@@ -138,7 +148,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 											from: locations[0].dataset.id,
 											to: node.dataset.id,
 											cards: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
-												.then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'));
+												.then(() => dojo.query('.ALTAYselectable').removeClass('ALTAYselectable'))
+												.catch((e) => console.log(e));
 								}
 						}
 					}
@@ -183,9 +194,13 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 						const nodes = dojo.query('.ALTAYresource.ALTAYselected', `ALTAYresources-${this.player_id}`);
 						if (nodes.length === 0)
 						{
-							if (this.getGameUserPreference(COST)) this.bgaPerformAction('actAcquireCard', {type: type}).then(() => nodes.removeClass('ALTAYselected'));
+							if (this.getGameUserPreference(COST)) this.bgaPerformAction('actAcquireCard', {type: type})
+										.then(() => nodes.removeClass('ALTAYselected'))
+										.catch((e) => console.log(e));
 						}
-						else this.bgaPerformAction('actAcquireCard', {type: type, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))}).then(() => nodes.removeClass('ALTAYselected'));
+						else this.bgaPerformAction('actAcquireCard', {type: type, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
+									.then(() => nodes.removeClass('ALTAYselected'))
+									.catch((e) => console.log(e));
 					}
 				});
 			}
@@ -197,7 +212,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			dojo.place(`<div id='ALTAYresourceContainer' class='ALTAYresourceContainer'></div>`, 'page-title');
 //
-			dojo.connect($('ALTAYplayArea'), 'click', () => this.restoreServerGameState());
+			dojo.connect($('ALTAYplayArea'), 'click', () => {
+				if (this.isInterfaceUnlocked()) this.restoreServerGameState();
+			});
 //
 			this.setupNotifications();
 //
@@ -208,7 +225,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			console.log('Entering state: ' + stateName, state.args);
 //
 			dojo.query('.ALTAYresource', `ALTAYresources-${this.player_id}`).forEach((node) =>
-				dojo.connect(dojo.place(`<img class='ALTAYresource' data-id='${node.dataset.id}' data-resource='${node.dataset.resource}' draggable='false' src='${g_gamethemeurl}img/SVG/${node.dataset.resource}.svg'>`, 'ALTAYresourceContainer'), 'click', (event) =>
+				dojo.connect(dojo.place(`<img draggable='false' class='ALTAYresource' data-id='${node.dataset.id}' data-resource='${node.dataset.resource}' draggable='false' src='${g_gamethemeurl}img/SVG/${node.dataset.resource}.svg'>`, 'ALTAYresourceContainer'), 'click', (event) =>
 				{
 					dojo.stopEvent(event);
 					if (this.isCurrentPlayerActive()) dojo.query(`.ALTAYresource[data-id='${node.dataset.id}'`).toggleClass('ALTAYselected');
@@ -221,14 +238,17 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					{
 						if (this.isCurrentPlayerActive() && this.getGameUserPreference(AUTO))
 						{
-							const nodes = dojo.query('.ALTAYactionCard', 'ALTAYplayerHand');
-							for (let node of nodes)
+							for (let card of Object.values(state.args.hand))
 							{
-								if (node.dataset.type === 'EARTHFOLK' && [3, 4, 5].includes(+node.dataset.type_arg)) return node.click();
-								if (node.dataset.type === 'ELVENFOLK' && [1, 2, 3, 4, 5].includes(+node.dataset.type_arg)) return node.click();
-								if (node.dataset.type === 'FIREFOLK' && [1, 2, 3].includes(+node.dataset.type_arg)) return node.click();
-								if (node.dataset.type === 'SMALLFOLK' && [1, 2, 3, 4, 5, 6].includes(+node.dataset.type_arg)) return node.click();
-								if ([1, 2, 3, 4].includes(+node.dataset.type)) return node.click();
+								const node = $(`ALTAYcard-${card.id}`);
+								if (node)
+								{
+									if (card.type === 'EARTHFOLK' && [3, 4, 5].includes(+card.type_arg)) return node.click();
+									if (card.type === 'ELVENFOLK' && [1, 2, 3, 4, 5].includes(+card.type_arg)) return node.click();
+									if (card.type === 'FIREFOLK' && [1, 2, 3].includes(+card.type_arg)) return node.click();
+									if (card.type === 'SMALLFOLK' && [1, 2, 3, 4, 5, 6].includes(+card.type_arg)) return node.click();
+									if ([1, 2, 3, 4].includes(+node.dataset.type)) return node.click();
+								}
 							}
 						}
 					}
@@ -238,6 +258,20 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 		onLeavingState: function (stateName)
 		{
 			console.log('Leaving state: ' + stateName);
+//
+			if (this.isCurrentPlayerActive())
+			{
+				if ('args' in this.gamedatas.gamestate && 'card' in this.gamedatas.gamestate.args)
+				{
+					const node = $(`ALTAYcard-${this.gamedatas.gamestate.args.card.id}`);
+					if (node && node.parentNode === this.board)
+					{
+						debugger;
+						dojo.destroy(node);
+						this.placeCard(this.gamedatas.gamestate.args.card);
+					}
+				}
+			}
 //
 			dojo.query('.ALTAYselectable').removeClass('ALTAYselectable');
 			dojo.query('.ALTAYselected').removeClass('ALTAYselected');
@@ -283,7 +317,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 								dojo.connect($(`${faction}button`), 'click', (event) =>
 								{
 									dojo.stopEvent(event);
-									return this.bgaPerformAction('actFactionChoice', {faction: faction}).then(() => dialog.destroy());
+									return this.bgaPerformAction('actFactionChoice', {faction: faction})
+											.then(() => dialog.destroy())
+											.catch((e) => console.log(e));
 								});
 							}
 						}
@@ -312,7 +348,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							$(this.board).scrollIntoView({behavior: 'smooth', block: 'center'});
 //
 							dojo.query('.ALTAYactionCard.ALTAYcombat', this.playerHand).addClass('ALTAYselectable');
-							for (let location of Object.keys(args)) dojo.addClass(`ALTAYregion-${location}`, 'ALTAYselectable');
+							for (let location of Object.keys(args.combatLocations)) dojo.addClass(`ALTAYregion-${location}`, 'ALTAYselectable');
 //
 							if ('ALTAYselected' in args) dojo.addClass(args.ALTAYselected, 'ALTAYselected');
 //
@@ -373,40 +409,32 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 									else this.bgaPerformAction('actPlay', {id: args.card.id, variant: variant});
 								}, null, false, 'gray');
 							}
-							this.addActionButton('ALTAYcancel', _('cancel'), () => {
-								dojo.destroy(`ALTAYcard-${args.card.id}`);
-								this.placeCard(args.card);
-								this.restoreServerGameState();
-							});
+							this.addActionButton('ALTAYcancel', _('cancel'), () => this.restoreServerGameState());
 						}
 						break;
 //
 					case 'consumeConquestMarker':
 //
-						for (let resource of ['FOOD', 'WOOD', 'METAL', 'STONE', 'CULTURE'])
 						{
-							const action = dojo.string.substitute('${' + resource + '}', {
-								'FOOD': `<img class='ALTAYresource' data-resource='${_('FOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/FOOD.svg'>`,
-								'WOOD': `<img class='ALTAYresource' data-resource='${_('WOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/WOOD.svg'>`,
-								'METAL': `<img class='ALTAYresource' data-resource='${_('METAL')}' draggable='false' src='${g_gamethemeurl}img/SVG/METAL.svg'>`,
-								'STONE': `<img class='ALTAYresource' data-resource='${_('STONE')}' draggable='false' src='${g_gamethemeurl}img/SVG/STONE.svg'>`,
-								'CULTURE': `<img class='ALTAYresource' data-resource='${_('CULTURE')}' draggable='false' src='${g_gamethemeurl}img/SVG/CULTURE.svg'>`
-							});
-							this.addActionButton(`ALTAYconsumeConquestMarker-${resource}`, action, () => {
-								this.bgaPerformAction('actPlay', {id: args.card.id, variant: 1, resource: resource});
-							}, null, false, 'gray');
+							for (let resource of ['FOOD', 'WOOD', 'METAL', 'STONE', 'CULTURE'])
+							{
+								const action = dojo.string.substitute('${' + resource + '}', {
+									'FOOD': `<img draggable='false' class='ALTAYresource' data-resource='${_('FOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/FOOD.svg'>`,
+									'WOOD': `<img draggable='false' class='ALTAYresource' data-resource='${_('WOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/WOOD.svg'>`,
+									'METAL': `<img draggable='false' class='ALTAYresource' data-resource='${_('METAL')}' draggable='false' src='${g_gamethemeurl}img/SVG/METAL.svg'>`,
+									'STONE': `<img draggable='false' class='ALTAYresource' data-resource='${_('STONE')}' draggable='false' src='${g_gamethemeurl}img/SVG/STONE.svg'>`,
+									'CULTURE': `<img draggable='false' class='ALTAYresource' data-resource='${_('CULTURE')}' draggable='false' src='${g_gamethemeurl}img/SVG/CULTURE.svg'>`
+								});
+								this.addActionButton(`ALTAYconsumeConquestMarker-${resource}`, action, () => {
+									this.bgaPerformAction('actPlay', {id: args.card.id, variant: 1, resource: resource});
+								}, null, false, 'gray');
+							}
+							this.addActionButton('ALTAYcancel', _('cancel'), () => this.restoreServerGameState());
 						}
-						this.addActionButton('ALTAYcancel', _('cancel'), () => {
-							dojo.destroy(`ALTAYcard-${args.card.id}`);
-							this.placeCard(args.card);
-							this.restoreServerGameState();
-						});
-//
 						break;
 				}
 			}
-		}
-		,
+		},
 		setupNotifications: function ()
 		{
 			console.log('notifications subscriptions setup');
@@ -463,7 +491,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			if (!node)
 			{
-				node = dojo.place(`<img id='ALTAYfaction-${faction}' draggable='false' class='ALTAYfaction ${faction}' src='${g_gamethemeurl}img/SVG/${faction}.svg'>`, `ALTAYfactionDisplay-${player_id}`, 'first');
+				node = dojo.place(`<img draggable='false' id='ALTAYfaction-${faction}' draggable='false' class='ALTAYfaction ${faction}' src='${g_gamethemeurl}img/SVG/${faction}.svg'>`, `ALTAYfactionDisplay-${player_id}`, 'first');
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
 					dojo.query('.ALTAYresource', `ALTAYresources-${player_id}`).removeClass('ALTAYselected');
@@ -486,11 +514,13 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					const nodes = dojo.query('.ALTAYresource.ALTAYselected', `ALTAYresources-${this.player_id}`);
 					if (nodes.length === 0)
 					{
-						if (this.getGameUserPreference(COST)) this.bgaPerformAction('actDevelopAchievement', {id: card.id}).then(() => nodes.removeClass('ALTAYselected'));
+						if (this.getGameUserPreference(COST)) this.bgaPerformAction('actDevelopAchievement', {id: card.id})
+									.then(() => nodes.removeClass('ALTAYselected'))
+									.catch((e) => console.log(e));
 					}
-					else this.bgaPerformAction('actDevelopAchievement', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], [
-							]))}).then(() => nodes.removeClass('ALTAYselected'));
-
+					else this.bgaPerformAction('actDevelopAchievement', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
+								.then(() => nodes.removeClass('ALTAYselected'))
+								.catch((e) => console.log(e));
 				}
 			});
 		},
@@ -524,7 +554,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							const achievementCard = this.gamedatas.ACHIEVEMENTS[card.type][card.type_arg];
 							this.confirmationDialog(dojo.string.substitute(_('Stop producing <B>${title}</B>'), {title: _(achievementCard.title)}), () => this.bgaPerformAction('actAchievement', {id: card.id, discard: true}));
 						}
-						else this.bgaPerformAction('actAchievement', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))}).then(() => nodes.removeClass('ALTAYselected'));
+						else this.bgaPerformAction('actAchievement', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
+									.then(() => nodes.removeClass('ALTAYselected'))
+									.catch((e) => console.log(e));
 					}
 				}
 			});
@@ -613,7 +645,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							const actionCard = isNaN(card.type) ? this.gamedatas.ACTIONCARDS[card.type][card.type_arg] : this.gamedatas.ACTIONCARDS[(+card.type - 1) * 8 + +card.type_arg + 1];
 							this.confirmationDialog(dojo.string.substitute(_('Discard <B>${title}</B>'), {title: _(actionCard.title)}), () => this.bgaPerformAction('actEffect', {id: card.id, discard: true}));
 						}
-						else this.bgaPerformAction('actEffect', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))}).then(() => nodes.removeClass('ALTAYselected'));
+						else this.bgaPerformAction('actEffect', {id: card.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
+									.then(() => nodes.removeClass('ALTAYselected'))
+									.catch((e) => console.log(e));
 					}
 				}
 			});
@@ -637,13 +671,33 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			if (marker.location <= 25)
 			{
-				const node = dojo.place(`<div id='ALTAYmarker-${marker.id}' class='ALTAYmarker' tabindex='0' data-type='${marker.type}' data-location='${marker.location}'></div>`, this.board);
-				if (marker.type[0] === 'x') dojo.addClass(node, 'ALTAYconquestMarker');
-				dojo.style(node, {
-					position: 'absolute',
-					left: `CALC(${BOARD[marker.location][0] - 0}% - ${node.clientWidth / 2}px)`,
-					top: `CALC(${BOARD[marker.location][1] - 0}% - ${node.clientHeight / 2}px)`
-				});
+				switch (marker.type)
+				{
+					case 'P1':
+					case 'P2':
+					case 'P3':
+					case 'P4':
+//
+						{
+							const node = dojo.place(`<div id='ALTAYmarker-${marker.id}' style='z-index:100;width:10cqw;height:10cqw;line-height:10cqw;font-size:5cqw;font-weight:bold;text-align:center;background-color:white;color:black;border-radius:50%;'>${marker.type}</div>`, this.board);
+							dojo.style(node, {
+								position: 'absolute',
+								left: `CALC(${BOARD[marker.location][0] - 0}% - ${node.clientWidth / 2}px)`,
+								top: `CALC(${BOARD[marker.location][1] - 0}% - ${node.clientHeight / 2}px)`
+							});
+						}
+						break;
+
+					default:
+//
+						const node = dojo.place(`<div id='ALTAYmarker-${marker.id}' class='ALTAYmarker' tabindex='0' data-type='${marker.type}' data-location='${marker.location}'></div>`, this.board);
+						if (marker.type[0] === 'x') dojo.addClass(node, 'ALTAYconquestMarker');
+						dojo.style(node, {
+							position: 'absolute',
+							left: `CALC(${BOARD[marker.location][0] - 0}% - ${node.clientWidth / 2}px)`,
+							top: `CALC(${BOARD[marker.location][1] - 0}% - ${node.clientHeight / 2}px)`
+						});
+				}
 			}
 			else
 			{
@@ -679,7 +733,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			if (isNaN(resource.location))
 			{
-				const node = dojo.place(`<img id='ALTAYresource-${resource.id}' class='ALTAYresource' data-id='${resource.id}' data-resource='${resource.type}' draggable='false' src='${g_gamethemeurl}img/SVG/${resource.type}.svg'>`, resource.location);
+				const node = dojo.place(`<img draggable='false' id='ALTAYresource-${resource.id}' class='ALTAYresource' data-id='${resource.id}' data-resource='${resource.type}' draggable='false' src='${g_gamethemeurl}img/SVG/${resource.type}.svg'>`, resource.location);
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
 					if (this.isCurrentPlayerActive() && /^ALTAYcard-[0-9]+$/.test(resource.location)) this.bgaPerformAction('actEffect', {id: $(resource.location).dataset.id});
@@ -687,11 +741,12 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			}
 			else
 			{
-				const node = dojo.place(`<img id='ALTAYresource-${resource.id}' class='ALTAYresource' data-id='${resource.id}' data-resource='${resource.type}' draggable='false' src='${g_gamethemeurl}img/SVG/${resource.type}.svg'>`, `ALTAYresources-${resource.location}`);
+				const node = dojo.place(`<img draggable='false' id='ALTAYresource-${resource.id}' class='ALTAYresource' data-id='${resource.id}' data-resource='${resource.type}' draggable='false' src='${g_gamethemeurl}img/SVG/${resource.type}.svg'>`, `ALTAYresources-${resource.location}`);
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
 					if (this.isCurrentPlayerActive()) dojo.query(`.ALTAYresource[data-id='${resource.id}'`).toggleClass('ALTAYselected');
 				});
+				dojo.query('.ALTAYresource', `ALTAYresources-${resource.location}`).sort((a, b) => SORT[a.dataset.resource] - SORT[b.dataset.resource]).forEach((node) => node.parentNode.appendChild(node));
 			}
 		},
 		removeResource(resource)
@@ -724,6 +779,10 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					});
 					index++;
 				});
+			}
+			else if (/^ALTAYachievement-\d+$/.test(settlement.location))
+			{
+				const node = dojo.place(`<div id='ALTAYsettlement-${settlement.id}' class='ALTAYsettlement ${settlement.faction}' tabindex='0' data-id='${settlement.id}' data-type='${settlement.faction}' data-location='${settlement.location}'></div>`, settlement.location, 'fisrt');
 			}
 			else
 			{

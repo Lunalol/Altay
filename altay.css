@@ -1,5 +1,5 @@
 /* <editor-fold defaultstate="collapsed" desc="BGA"> */
-#overall-content div,img
+#overall-content div,.standard_popin div,img
 {
 	user-select: none;
 }
@@ -59,7 +59,14 @@
 	border-radius: 10px;
 	box-shadow: 0px 0px 5px 5px black;
 	width: 80%;
-	max-width: 100vmin;
+	max-width: 50vmax;
+	container-type: size;
+}
+#ALTAYboard.ALTAY2players {
+	background-image: url('img/2players.png'), url('img/board.jpg');
+}
+#ALTAYboard.ALTAY3players {
+	background-image: url('img/3players.png'), url('img/board.jpg');
 }
 /* </editor-fold> */
 /* <editor-fold defaultstate="collapsed" desc="ACHIEVEMENTS"> */
@@ -311,6 +318,13 @@
 	transform-origin: center;
 	transition: transform .25s, box-shadow .25s;
 }
+.ALTAYachievementCards>.ALTAYsettlement
+{
+	position: absolute;
+	top: 1cqw;
+	right: 1cqw;
+	width: 25cqw;
+}
 #ALTAYboard>.ALTAYsettlement:hover
 {
 	transition: transform .5s, box-shadow .5s;
@@ -363,6 +377,11 @@
 {
 	transform: translateY(-50%) rotate(-45deg);
 	transition: transform .5s, box-shadow .5s;
+}
+.ALTAYmarker[data-type='disabled']
+{
+	background-position-y: 100%;
+	opacity: 50%;
 }
 .ALTAYmarker[data-type='x1']
 {
@@ -443,9 +462,14 @@
 {
 	position: relative;
 	height: 25px;
-	margin: 0px 3px;
+	margin: 0px 5px;
 	vertical-align: middle;
 	filter: drop-shadow(2px 2px 2px black);
+}
+.bgabutton>.ALTAYresource,.bgabutton>.ALTAYicon
+{
+	height: 17px;
+	margin: 0px;
 }
 .ALTAYactionCard>.ALTAYresource
 {
@@ -466,7 +490,7 @@
 .ALTAYresource.ALTAYselected
 {
 	box-shadow: 0px 0px 5px 5px red;
-    border-radius: 25%;
+	border-radius: 25%;
 }
 .ALTAYactionCard>.ALTAYresource:first-of-type {
 	position: absolute;

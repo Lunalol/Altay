@@ -1,1 +1,15 @@
-{}
+{
+	"100": {
+		"name": "Recommended setup",
+		"tmdisplay": "Recommended setup",
+		"level": "major",
+		"values": {
+			"0": {
+				"name": "Disabled"
+			},
+			"1": {
+				"name": "Enabled"
+			}
+		}
+	}
+}
