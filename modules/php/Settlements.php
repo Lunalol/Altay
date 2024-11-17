@@ -28,14 +28,22 @@ class Settlements extends \APP_GameClass
 	}
 	static function getAt(string $location, string|null $faction = null): array
 	{
-		if ($faction) return self::getCollectionFromDB("SELECT * FROM settlements WHERE location = '$location' WHERE faction = '$faction'");
+		if ($faction) return self::getCollectionFromDB("SELECT * FROM settlements WHERE location = '$location' AND faction = '$faction'");
 		return self::getCollectionFromDB("SELECT * FROM settlements WHERE location = '$location' ORDER BY faction");
 	}
-	static function getTerritories($faction)
+	static function getTerritories(string $faction): array
 	{
 		$territories = [FARMLAND => 0, FOREST => 0, HILL => 0, MOUNTAIN => 0];
-		foreach (self::getObjectListFromDB("SELECT DISTINCT location FROM settlements WHERE faction = '$faction' AND location REGEXP '^[0-9]+$' AND location <= 25", true) as $location) $territories[Board::REGIONS[$location]]++;
+		foreach (self::getOwned($faction) as $location) $territories[Board::REGIONS[$location]]++;
 		return $territories;
+	}
+	static function getOwner(string $location)
+	{
+		return self::getUniqueValueFromDB("SELECT DISTINCT faction FROM settlements WHERE location = '$location'");
+	}
+	static function getOwned(string $faction): array
+	{
+		return self::getObjectListFromDB("SELECT DISTINCT location FROM settlements WHERE faction = '$faction' AND location REGEXP '^[0-9]+$' AND location <= 25", true);
 	}
 	static function place(string $faction): array
 	{

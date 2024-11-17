@@ -303,6 +303,7 @@
 	flex-wrap: wrap;
 	align-items: flex-start;
 	margin: 5px;
+	width: fit-content;
 }
 .ALTAYsettlementMarkerContainer>.ALTAYsettlement
 {
@@ -317,6 +318,10 @@
 	background-image: url('img/tokens.png');
 	transform-origin: center;
 	transition: transform .25s, box-shadow .25s;
+}
+.ALTAYresourceContainer>.ALTAYsettlement
+{
+	width: 30px;
 }
 .ALTAYachievementCards>.ALTAYsettlement
 {
@@ -457,6 +462,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
+	margin: 5px;
 }
 .ALTAYresource,.ALTAYicon
 {
@@ -549,13 +555,13 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-evenly;
-	margin: 5px;
+	margin: 0px;
 }
 .ALTAYplayOnTable>.ALTAYactionCards {
-	width: 75px;
+	width: 72px;
 }
 .ALTAYplayOnTable>.ALTAYachievementCards {
-	width: 100px;
+	width: 110px;
 }
 
 .ALTAYplayer

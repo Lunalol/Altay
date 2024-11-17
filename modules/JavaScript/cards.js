@@ -60,14 +60,15 @@ function actionCard(card)
 function translate(variant)
 {
 	return dojo.string.substitute(_(variant), {
+		'you': '${you}',
 		'FOOD': `<img draggable='false' class='ALTAYresource' data-resource='${_('FOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/FOOD.svg'>`,
 		'WOOD': `<img draggable='false' class='ALTAYresource' data-resource='${_('WOOD')}' draggable='false' src='${g_gamethemeurl}img/SVG/WOOD.svg'>`,
 		'METAL': `<img draggable='false' class='ALTAYresource' data-resource='${_('METAL')}' draggable='false' src='${g_gamethemeurl}img/SVG/METAL.svg'>`,
 		'STONE': `<img draggable='false' class='ALTAYresource' data-resource='${_('STONE')}' draggable='false' src='${g_gamethemeurl}img/SVG/STONE.svg'>`,
 		'CULTURE': `<img draggable='false' class='ALTAYresource' data-resource='${_('CULTURE')}' draggable='false' src='${g_gamethemeurl}img/SVG/CULTURE.svg'>`,
 		'SETTLEMENT': `<img draggable='false' class='ALTAYresource' draggable='false' src='${g_gamethemeurl}img/SVG/SETTLEMENT.svg'>`,
-		'ATTACK': `<img draggable='false' class='ALTAYicon' draggable='false' src='${g_gamethemeurl}img/SVG/ATTACK.svg'>`,
-		'DEFENSE': `<img draggable='false' class='ALTAYicon' draggable='false' src='${g_gamethemeurl}img/SVG/DEFENSE.svg'>`,
+		'ATTACK': `<img draggable='false' class='ALTAYicon' data-icon='${_('ATTACK')}' draggable='false' src='${g_gamethemeurl}img/SVG/ATTACK.svg'>`,
+		'DEFENSE': `<img draggable='false' class='ALTAYicon' data-icon='${_('DEFENSE')}' draggable='false' src='${g_gamethemeurl}img/SVG/DEFENSE.svg'>`,
 		'WILD': `<img draggable='false' class='ALTAYicon' data-icon='${_('ANY RESOURCE')}'draggable='false' src='${g_gamethemeurl}img/SVG/WILD.svg'>`,
 		'CONQUEST': `<img draggable='false' class='ALTAYicon' data-icon='${_('CONQUEST MARKER')} 'draggable='false' src='${g_gamethemeurl}img/SVG/CONQUEST.svg'>`,
 		'INSTANT': `<img draggable='false' class='ALTAYicon' draggable='false' src='${g_gamethemeurl}img/SVG/INSTANT.svg'>`,

@@ -61,7 +61,7 @@ $machinestates = [
 		'name' => 'startOfTurn',
 		'type' => 'game',
 		'action' => 'stStartOfTurn',
-		'transitions' => ['gameTurn' => 110]
+		'transitions' => ['gameTurn' => 110, 'scoringAndWinner' => 200]
 	],
 	110 => [
 		'name' => 'gameTurn',
@@ -70,8 +70,8 @@ $machinestates = [
 		'descriptionmyturn' => '',
 		'type' => 'activeplayer',
 		'args' => 'argsGameTurn',
-		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
-		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'pass' => 190]
+		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actAchievementEffect', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
+		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'PVP' => 130, 'pass' => 190]
 	],
 	120 => [
 		'name' => 'placeSettlement',
@@ -83,10 +83,31 @@ $machinestates = [
 		'possibleactions' => ['actPlaceSettlement'],
 		'transitions' => ['placeSettlement' => 120, 'continue' => 110]
 	],
+	130 => [
+		'name' => 'PVP',
+		'type' => 'game',
+		'action' => 'stPVP',
+		'transitions' => ['surrenderOrFight' => 135]
+	],
+	135 => [
+		'name' => 'surrenderOrFight',
+		'description' => clienttranslate('${actplayer} must decide to surrender or fight'),
+		'descriptionmyturn' => clienttranslate('${you} must decide to surrender or fight'),
+		'type' => 'multipleactiveplayer',
+		'args' => 'argsSurrenderOrFight',
+		'possibleactions' => ['actSurrenderOrFight'],
+		'transitions' => ['continue' => 110]
+	],
 	190 => [
 		'name' => 'endOfTurn',
 		'type' => 'game',
 		'action' => 'stEndOfTurn',
 		'transitions' => ['startOfTurn' => 100]
+	],
+	200 => [
+		'name' => 'scoringAndWinner',
+		'type' => 'game',
+		'action' => 'stScoringAndWinner',
+		'transitions' => ['gameEnd' => 99]
 	],
 ];
