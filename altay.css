@@ -429,22 +429,25 @@
 }
 /* </editor-fold> */
 /* <editor-fold defaultstate="collapsed" desc="REGIONS"> */
-.ALTAYregion
-{
-	width: 20%;
-	height: 25%;
-	/*	aspect-ratio: 1;*/
-	border-radius: 50%;
-	pointer-events: none;
+.ALTAYregion {
+	stroke-width: 5;
+}
+.ALTAYregion:hover {
+	fill: #00000040;
+	stroke: black;
+	z-index: 1;
 }
 .ALTAYregion.ALTAYselectable
 {
-	box-shadow: 0px 0px 50px 50px black;
-	pointer-events: all;
+	stroke-width: 10;
 }
 .ALTAYregion.ALTAYselected
 {
-	filter: invert(1);
+	stroke-width: 15;
+}
+.ALTAYregion.ALTAYdisabled
+{
+	fill: #000000C0;
 }
 .ALTAYdisabled {
 	pointer-events: none;
@@ -570,4 +573,8 @@
 	border-radius: 5px;
 	margin: 0px 5px;
 	padding: 2px;
+}
+
+.mobile_version #ALTAYboard {
+	max-width: 100vmax;
 }
