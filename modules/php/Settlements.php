@@ -79,7 +79,13 @@ class Settlements extends \APP_GameClass
 		foreach (self::getOwned($faction) as $location)
 		{
 			$locations[$location] = [];
-			foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && (Markers::getConquestMarkersAt($next_location) || (self::getOwned($next_location) && self::getOwned($next_location) !== $faction))) $locations[$location][] = $next_location;
+			foreach (Board::ADJACENCY[$location] as $next_location)
+			{
+				if (!in_array($next_location, $disabled))
+				{
+					if (Markers::getConquestMarkersAt($next_location) || (self::getOwner($next_location) && self::getOwner($next_location) !== $faction)) $locations[$location][] = $next_location;
+				}
+			}
 		}
 //
 		return $locations;
@@ -92,7 +98,7 @@ class Settlements extends \APP_GameClass
 		foreach (self::getOwned($faction) as $location)
 		{
 			$locations[$location] = [];
-			foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && (!Markers::getConquestMarkersAt($next_location) || self::getOwned($next_location) === $faction)) $locations[$location][] = $next_location;
+			foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && (!Markers::getConquestMarkersAt($next_location) || self::getOwner($next_location) === $faction)) $locations[$location][] = $next_location;
 		}
 //
 		return $locations;

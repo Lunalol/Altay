@@ -65,7 +65,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //			new dijit.Tooltip({connectId: "ebd-body", selector: ":not(.ALTAYsettlementMarkerContainer)>.ALTAYsettlement", showDelay: 500, hideDelay: 0, getContent: () => _('Settlement')});
 //			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYresource", showDelay: 500, hideDelay: 0, getContent: (node) => _(node.dataset.resource)});
 //			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYicon", showDelay: 500, hideDelay: 0, getContent: (node) => _(node.dataset.icon)});
-			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYactionDisplay>.ALTAYactionCards", showDelay: 500, hideDelay: 0, getContent: (node) => actionCard({id: 0, type: node.dataset.type, type_arg: node.dataset.type_arg})});
+			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYactionDisplay>.ALTAYactionCards,.ALTAYachievementCards>.ALTAYactionCards", showDelay: 500, hideDelay: 0, getContent: (node) => actionCard({id: 0, type: node.dataset.type, type_arg: node.dataset.type_arg})});
 			new dijit.Tooltip({connectId: "ebd-body", selector: ".ALTAYachievementCards", showDelay: 500, hideDelay: 0, getContent: (node) =>
 				{
 					if ('type_arg' in node.dataset)
@@ -208,7 +208,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			for (let card of Object.values(gamedatas.playOnTable)) this.playOnTable(card);
 			for (let achievementCard of Object.values(gamedatas.achievementCards.playOnTable)) this.developAchievement(achievementCard);
-			for (let card of Object.values(gamedatas.archived)) this.archived(card);
+			for (let card of Object.values(gamedatas.archived)) this.archiveCard(card);
 //
 // Markers & Resources & Settlements
 //
@@ -662,6 +662,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 									dojo.query(`.ALTAYsettlement[data-type='${args.faction}']`, this.board).addClass('ALTAYselectable');
 //
+									this.addActionButton('ALTAYeffect', action, () => this.showMessage(_('Select a setlement first and then select a region')), null, false, 'gray');
 //
 									break;
 							}
@@ -704,6 +705,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			dojo.subscribe('playCard', (notif) => this.playCard(notif.args.card));
 			dojo.subscribe('playOnTable', (notif) => this.playOnTable(notif.args.card));
 			dojo.subscribe('discardCard', (notif) => this.discardCard(notif.args.card, notif.args.player_id));
+			dojo.subscribe('archiveCard', (notif) => this.archiveCard(notif.args.card));
 //
 			dojo.subscribe('placeMarker', (notif) => this.placeMarker(notif.args.marker));
 			dojo.subscribe('consumeMarker', (notif) => this.consumeMarker(notif.args.marker));
@@ -728,6 +730,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			this.notifqueue.setSynchronous('playCard', DELAY);
 			this.notifqueue.setSynchronous('playOnTable', DELAY);
 			this.notifqueue.setSynchronous('discardCard', DELAY);
+			this.notifqueue.setSynchronous('archiveCard', DELAY);
 //
 			this.notifqueue.setSynchronous('placeMarker', DELAY);
 			this.notifqueue.setSynchronous('consumeMarker', DELAY);
@@ -929,7 +932,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				}
 			});
 		},
-		archived(card)
+		archiveCard(card)
 		{
 			console.log('archive', card);
 //
@@ -939,9 +942,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				const node = dojo.place(actionCard(card), container);
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
-					if (this.isCurrentPlayerActive() && dojo.hasClass(node, 'ALTAYselectable'))
-					{
-					}
+					if (this.isCurrentPlayerActive() && dojo.hasClass(node, 'ALTAYselectable')) this.bgaPerformAction('actArchived', {id: event.currentTarget.dataset.id});
 				});
 			}
 		},

@@ -177,7 +177,7 @@
 }
 .ALTAYactionCardHolder>.ALTAYactionCard:not(:first-child)
 {
-	margin-top: -120%;
+	margin-top: -125%;
 }
 .ALTAYactionCards
 {
@@ -566,7 +566,7 @@
 .ALTAYfaction
 {
 	margin:2px;
-	height:50px;
+	height:40px;
 	vertical-align:middle;
 	transition: filter .25s;
 	filter: drop-shadow(2px 2px 2px black);

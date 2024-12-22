@@ -69,7 +69,7 @@ $machinestates = [
 		'descriptionmyturn' => '',
 		'type' => 'activeplayer',
 		'args' => 'argsGameTurn',
-		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actAchievementEffect', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
+		'possibleactions' => ['actPlay', 'actArchived', 'actAcquireCard', 'actCombat', 'actAchievement', 'actAchievementEffect', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
 		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'PVP' => 130, 'endOfTurn' => 180, 'pass' => 190]
 	],
 	120 => [
