@@ -66,12 +66,11 @@ $machinestates = [
 	110 => [
 		'name' => 'gameTurn',
 		'description' => clienttranslate('${actplayer} must play cards in hand'),
-//		'descriptionmyturn' => clienttranslate('${you} must play cards in hand'),
 		'descriptionmyturn' => '',
 		'type' => 'activeplayer',
 		'args' => 'argsGameTurn',
 		'possibleactions' => ['actPlay', 'actAcquireCard', 'actCombat', 'actAchievement', 'actAchievementEffect', 'actEffect', 'actDevelopAchievement', 'actPass', 'actUndo'],
-		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'PVP' => 130, 'pass' => 190]
+		'transitions' => ['continue' => 110, 'placeSettlement' => 120, 'PVP' => 130, 'endOfTurn' => 180, 'pass' => 190]
 	],
 	120 => [
 		'name' => 'placeSettlement',
@@ -97,6 +96,14 @@ $machinestates = [
 		'args' => 'argsSurrenderOrFight',
 		'possibleactions' => ['actSurrenderOrFight'],
 		'transitions' => ['continue' => 110]
+	],
+	180 => [
+		'name' => 'endOfTurn',
+		'description' => clienttranslate('${actplayer} can archive one card on <B>Writing</B>'),
+		'descriptionmyturn' => clienttranslate('${actplayer} can archive one card <B>Writing</B>'),
+		'type' => 'activeplayer',
+		'possibleactions' => ['actEndOfTurn'],
+		'transitions' => ['continue' => 190]
 	],
 	190 => [
 		'name' => 'endOfTurn',

@@ -131,7 +131,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 											.catch((e) => console.log(e));
 							}
 						});
-
 					}
 					else dojo.place(`<div id='ALTAYsecret-${player_id}' class='ALTAYachievementCards' data-type='3' data-type_arg='0' style='grid-row:level-3;grid-column:level;'></div>`, secretContainer);
 				}
@@ -164,19 +163,27 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 						switch (this.gamedatas.gamestate.name)
 						{
 							case 'settlementChoice':
-								return this.bgaPerformAction('actSettlementChoice', {location: location})
+								this.bgaPerformAction('actSettlementChoice', {location: location})
 										.then(() => dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion')))
 										.catch((e) => console.log(e));
+								break;
 							case 'placeSettlement':
-								return this.bgaPerformAction('actPlaceSettlement', {location: location})
+								this.bgaPerformAction('actPlaceSettlement', {location: location})
 										.then(() => dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion')))
 										.catch((e) => console.log(e));
+								break;
+							case 'oncePerTurn':
+								const nodes = dojo.query('.ALTAYregion.ALTAYselected', this.board);
+								if (nodes.length === 1) this.bgaPerformAction('actAchievementEffect', {id: this.gamedatas.gamestate.args.card.id, effect: JSON.stringify({from: nodes[0].dataset.id, to: location})})
+											.then(() => dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion')))
+											.catch((e) => console.log(e));
+								break;
 							case 'combat':
-								if (location in this.gamedatas.gamestate.args.locations)
+								if (location in this.gamedatas.gamestate.args._private.locations.combat)
 								{
 									dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion ALTAYdisabled'));
 									node.setAttribute('class', 'ALTAYregion ALTAYselectable ALTAYselected');
-									for (let l of this.gamedatas.gamestate.args.locations[location])
+									for (let l of this.gamedatas.gamestate.args._private.locations.combat[location])
 										$(`ALTAYregion-${l}`).setAttribute('class', 'ALTAYregion ALTAYselectable');
 								}
 								else
@@ -184,13 +191,14 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 									const location = this.board.querySelector('.ALTAYregion.ALTAYselected');
 									const nodes = dojo.query('.ALTAYactionCard.ALTAYselected', this.playerHand);
 									if (nodes.length > 0 && location)
-										return this.bgaPerformAction('actCombat', {
+										this.bgaPerformAction('actCombat', {
 											from: location.dataset.id,
 											to: node.dataset.id,
 											cards: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
 												.then(() => dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion')))
 												.catch((e) => console.log(e));
 								}
+								break;
 						}
 					}
 				});
@@ -200,6 +208,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			for (let card of Object.values(gamedatas.playOnTable)) this.playOnTable(card);
 			for (let achievementCard of Object.values(gamedatas.achievementCards.playOnTable)) this.developAchievement(achievementCard);
+			for (let card of Object.values(gamedatas.archived)) this.archived(card);
 //
 // Markers & Resources & Settlements
 //
@@ -304,7 +313,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 					{
 						dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion ALTAYdisabled'));
-						for (let location of Object.keys(state.args.locations))
+						for (let location of Object.keys(state.args._private.locations.combat))
 						{
 							$(`ALTAYregion-${location}`).style.stroke = COLORS[state.args.faction];
 							if (this.isCurrentPlayerActive()) $(`ALTAYregion-${location}`).setAttribute('class', 'ALTAYregion ALTAYselectable ALTAYselected');
@@ -324,7 +333,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 							if (this.getGameUserPreference(AUTO))
 							{
-								for (let card of Object.values(state.args.hand))
+								for (let card of Object.values(state.args._private.hand))
 								{
 									const node = $(`ALTAYcard-${card.id}`);
 									if (node)
@@ -378,7 +387,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			if (this.isCurrentPlayerActive())
 			{
-				if ('args' in this.gamedatas.gamestate && 'card' in this.gamedatas.gamestate.args)
+				if ('args' in this.gamedatas.gamestate && this.gamedatas.gamestate.args && 'card' in this.gamedatas.gamestate.args)
 				{
 					const node = $(`ALTAYcard-${this.gamedatas.gamestate.args.card.id}`);
 					if (node && node.parentNode === this.board)
@@ -451,7 +460,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					case 'combat':
 //
 						{
-							dojo.addClass('ALTAYplayerHand', 'ALTAYselected');
+							dojo.addClass(this.playerHand, 'ALTAYselected');
 							$(this.board).scrollIntoView({behavior: 'smooth', block: 'center'});
 //
 							dojo.query('.ALTAYactionCard.ALTAYcombat', this.playerHand).addClass('ALTAYselectable');
@@ -473,7 +482,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					case 'surrender':
 //
 						{
-							dojo.addClass('ALTAYplayerHand', 'ALTAYselected');
+							dojo.addClass(this.playerHand, 'ALTAYselected');
 							$(this.board).scrollIntoView({behavior: 'smooth', block: 'center'});
 //
 							dojo.query('.ALTAYactionCard', this.playerHand).addClass('ALTAYselectable');
@@ -492,7 +501,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					case 'fight':
 //
 						{
-							dojo.addClass('ALTAYplayerHand', 'ALTAYselected');
+							dojo.addClass(this.playerHand, 'ALTAYselected');
 							$(this.board).scrollIntoView({behavior: 'smooth', block: 'center'});
 //
 							dojo.query('.ALTAYactionCard.ALTAYcombat', this.playerHand).addClass('ALTAYselectable');
@@ -520,12 +529,12 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							this.addActionButton('ALTAYproduce', _('PLAY CARDS'), (event) => {
 //							this.addActionButton('ALTAYproduce', _('PRODUCE RESOURCES'), (event) => {
 								dojo.stopEvent(event);
-								dojo.addClass('ALTAYplayerHand', 'ALTAYselected');
+								dojo.addClass(this.playerHand, 'ALTAYselected');
 								$(this.board).scrollIntoView({behavior: 'smooth', block: 'center'});
 							});
 							this.addActionButton('ALTAYacquire', _('ACQUIRE NEW ACTION CARDS'), (event) => {
 								dojo.stopEvent(event);
-								dojo.removeClass('ALTAYplayerHand', 'ALTAYselected');
+								dojo.removeClass(this.playerHand, 'ALTAYselected');
 								$('ALTAYactionCardDisplay').scrollIntoView({behavior: 'smooth', block: 'center'});
 							});
 //							this.addActionButton('ALTAYcombat', _('COMBAT'), (event) => {
@@ -534,14 +543,14 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //							});
 							this.addActionButton('ALTAYdevelop', _('DEVELOP ACHIEVEMENTS'), (event) => {
 								dojo.stopEvent(event);
-								dojo.removeClass('ALTAYplayerHand', 'ALTAYselected');
+								dojo.removeClass(this.playerHand, 'ALTAYselected');
 								$('ALTAYachievementCardDisplay').scrollIntoView({behavior: 'smooth', block: 'center'});
 							});
 //
 							this.addActionButton('ALTAYpass', _('End of Turn'), (event) => {
 								dojo.stopEvent(event);
 								$(this.board).scrollIntoView({behavior: 'instant', block: 'center'});
-								dojo.addClass('ALTAYplayerHand', 'ALTAYselected');
+								dojo.addClass(this.playerHand, 'ALTAYselected');
 								if (dojo.query('.ALTAYactionCard', this.playerHand).length === 0) this.bgaPerformAction('actPass');
 								else this.confirmationDialog('You have unused cards in hand', () => this.bgaPerformAction('actPass'));
 							}, null, false, 'red');
@@ -584,6 +593,98 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							this.addActionButton('ALTAYcancel', _('cancel'), () => this.restoreServerGameState(), null, false, 'gray');
 						}
 						break;
+//
+					case 'oncePerTurn':
+//
+						{
+							this.addActionButton('ALTAYcancel', _('cancel'), () => this.restoreServerGameState(), null, false, 'gray');
+//
+							const action = translate(this.gamedatas.ACHIEVEMENTS[args.card.type][args.card.type_arg][0]);
+							switch (args.card.type + args.card.type_arg)
+							{
+//
+								case '11': // ${ONCEPERTURN} Trash 1 card to draw 1 card
+//
+									dojo.addClass(this.playerHand, 'ALTAYselected');
+									dojo.query('.ALTAYactionCard', this.playerHand).addClass('ALTAYselectable');
+//
+									this.addActionButton('ALTAYeffect', action, () =>
+									{
+										const cards = dojo.query('.ALTAYactionCards.ALTAYselected', this.playerHand);
+										if (cards.length === 1) this.bgaPerformAction('actAchievementEffect', {id: args.card.id, effect: JSON.stringify({card: cards[0].dataset.id})});
+									}, null, false, 'gray');
+//
+									break;
+//
+								case '13': // ${ONCEPERTURN} Discard 1 card to draw 1 card
+//
+									dojo.addClass(this.playerHand, 'ALTAYselected');
+									dojo.query('.ALTAYactionCard', this.playerHand).addClass('ALTAYselectable');
+//
+									this.addActionButton('ALTAYeffect', action, () =>
+									{
+										const cards = dojo.query('.ALTAYactionCards.ALTAYselected', this.playerHand);
+										if (cards.length === 1) this.bgaPerformAction('actAchievementEffect', {id: args.card.id, effect: JSON.stringify({card: cards[0].dataset.id})});
+									}, null, false, 'gray');
+//
+									break;
+//
+								case '21': // ${ONCEPERTURN} Spend ${WILD} to produce ${WILD}
+//
+									this.addActionButton('ALTAYeffect', translate(_('${ONCEPERTURN} Spend ${WILD} to produce')), () =>
+									{
+										const resources = dojo.query('>.ALTAYresource.ALTAYselected', `ALTAYresources-${this.player_id}`);
+										if (resources.length === 1 && this.resource) this.bgaPerformAction('actAchievementEffect', {id: args.card.id, effect: JSON.stringify({from: resources[0].dataset.id, to: this.resource})});
+									}, null, false, 'gray');
+//
+									this.resource = null;
+									this.addActionButton('ALTAYfood', translate('${FOOD}'), () => this.resource = 'FOOD', 'ALTAYeffect', false, 'gray');
+									this.addActionButton('ALTAYwood', translate('${WOOD}'), () => this.resource = 'WOOD', 'ALTAYeffect', false, 'gray');
+									this.addActionButton('ALTAYmetal', translate('${METAL}'), () => this.resource = 'METAL', 'ALTAYeffect', false, 'gray');
+									this.addActionButton('ALTAYstone', translate('${STONE}'), () => this.resource = 'STONE', 'ALTAYeffect', false, 'gray');
+									this.addActionButton('ALTAYculture', translate('${CULTURE}'), () => this.resource = 'CULTURE', 'ALTAYeffect', false, 'gray');
+//
+									break;
+//
+								case '24': // ${ONCEPERTURN} Produce ${CULTURE}
+//
+									this.addActionButton('ALTAYeffect', action, () => this.bgaPerformAction('actAchievementEffect', {id: args.card.id}), null, false, 'gray');
+//
+									break;
+//
+								case '25': // ${ONCEPERTURN} Resettle one of your ${SETTLEMENT} to an adjacent territory
+//
+									for (let location of Object.keys(args.locations))
+									{
+										$(`ALTAYregion-${location}`).style.stroke = COLORS[args.faction];
+										$(`ALTAYregion-${location}`).setAttribute('class', 'ALTAYregion ALTAYselectable');
+									}
+//
+									dojo.query(`.ALTAYsettlement[data-type='${args.faction}']`, this.board).addClass('ALTAYselectable');
+//
+//
+									break;
+							}
+						}
+						break;
+//
+					case 'endOfTurn':
+//
+						dojo.addClass(this.playerHand, 'ALTAYselected');
+						dojo.query('.ALTAYactionCard', this.playerHand).addClass('ALTAYselectable');
+//
+						const action = translate(this.gamedatas.ACHIEVEMENTS[1][5][0]);
+						this.addActionButton('ALTAYeffect', action, () =>
+						{
+							const nodes = dojo.query('.ALTAYactionCard.ALTAYselected', this.playerHand);
+							if (nodes.length === 1) this.bgaPerformAction('actEndOfTurn', {id: nodes[0].dataset.id});
+
+						}, null, false, 'gray');
+//
+						this.addActionButton('ALTAYpass', _('End of Turn'), () => this.bgaPerformAction('actEndOfTurn'), null, false, 'red');
+//
+						break;
+//
 				}
 			}
 		},
@@ -673,7 +774,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 						if (this.getGameUserPreference(COST)) this.bgaPerformAction('actDevelopAchievement', {id: event.currentTarget.dataset.id})
 									.catch((e) => console.log(e));
 					}
-					else this.bgaPerformAction('actDevelopAchievement', {id: event.currentTarget.dataset.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id], []))})
+					else this.bgaPerformAction('actDevelopAchievement', {id: event.currentTarget.dataset.id, resources: JSON.stringify(nodes.reduce((L, node) => [...L, node.dataset.id
+								], []))})
 								.then(() => nodes.removeClass('ALTAYselected'))
 								.catch((e) => console.log(e));
 				}
@@ -703,13 +805,14 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				{
 					if (this.gamedatas.gamestate.name === 'gameTurn')
 					{
+						const achievementCard = this.gamedatas.ACHIEVEMENTS[card.type][card.type_arg];
+//
 						const nodes = dojo.query('>.ALTAYresource', node);
 						if (nodes.length > 0)
 						{
 							const nodes = dojo.query('>.ALTAYresource.ALTAYselected', `ALTAYresources-${this.player_id}`);
 							if (nodes.length === 0)
 							{
-								const achievementCard = this.gamedatas.ACHIEVEMENTS[card.type][card.type_arg];
 								if (+node.dataset.type === 3) return this.showMessage('Unlike technologies, you can never discard a wonder after you start to develop it');
 								this.confirmationDialog(dojo.string.substitute(_('Stop producing <B>${title}</B>'), {title: _(achievementCard.title)}), () => this.bgaPerformAction('actAchievement', {id: card.id, discard: true}));
 							}
@@ -717,9 +820,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 										.then(() => nodes.removeClass('ALTAYselected'))
 										.catch((e) => console.log(e));
 						}
-						else if (['11', '13', '21', '24', '25'].includes(node.dataset.type + node.dataset.type_arg)) this.bgaPerformAction('actAchievementEffect', {id: event.currentTarget.dataset.id})
-									.then(() => nodes.removeClass('ALTAYselected'))
-									.catch((e) => console.log(e));
+						else if (dojo.hasClass(node, 'ALTAYoncePerTurn') && !this.gamedatas.gamestate.args._private.acquired.includes(achievementCard.title))
+							this.setClientState('oncePerTurn', {args: {faction: this.gamedatas.gamestate.args.faction, card: card, locations: this.gamedatas.gamestate.args._private.locations.resettle}});
 					}
 				}
 			});
@@ -752,6 +854,16 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					if (this.gamedatas.gamestate.name === 'combat') if (dojo.hasClass(node, 'ALTAYselectable')) dojo.toggleClass(node, 'ALTAYselected');
 					if (this.gamedatas.gamestate.name === 'surrender') if (dojo.hasClass(node, 'ALTAYselectable')) dojo.toggleClass(node, 'ALTAYselected');
 					if (this.gamedatas.gamestate.name === 'fight') if (dojo.hasClass(node, 'ALTAYselectable')) dojo.toggleClass(node, 'ALTAYselected');
+					if (this.gamedatas.gamestate.name === 'oncePerTurn') if (dojo.hasClass(node, 'ALTAYselectable'))
+						{
+							dojo.query('.ALTAYactionCard', this.playerHand).removeClass('ALTAYselected');
+							dojo.toggleClass(node, 'ALTAYselected');
+						}
+					if (this.gamedatas.gamestate.name === 'endOfTurn') if (dojo.hasClass(node, 'ALTAYselectable'))
+						{
+							dojo.query('.ALTAYactionCard', this.playerHand).removeClass('ALTAYselected');
+							dojo.toggleClass(node, 'ALTAYselected');
+						}
 				}
 			});
 		},
@@ -817,6 +929,22 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				}
 			});
 		},
+		archived(card)
+		{
+			console.log('archive', card);
+//
+			const container = $(`ALTAYachievement-${card.location_arg}`).querySelector(`.ALTAYachievementCards[data-type='1'][data-type_arg='5']`);
+			if (container)
+			{
+				const node = dojo.place(actionCard(card), container);
+				dojo.connect(node, 'click', (event) => {
+					dojo.stopEvent(event);
+					if (this.isCurrentPlayerActive() && dojo.hasClass(node, 'ALTAYselectable'))
+					{
+					}
+				});
+			}
+		},
 		discardCard(card)
 		{
 			console.log('discardCard', card);
@@ -878,7 +1006,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				{
 					dojo.addClass(node, 'ALTAYconquestMarker');
 					dojo.query('>.ALTAYconquestMarker', `ALTAYconquestMarkerContainer-${marker.location}`).sort((b, a) => SORT[a.dataset.type] - SORT[b.dataset.type]).forEach((node) => node.parentNode.appendChild(node));
-
 				}
 			}
 		},
@@ -947,9 +1074,19 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				const node = dojo.place(`<div id='ALTAYsettlement-${settlement.id}' class='ALTAYsettlement ${settlement.faction}' tabindex='0' data-id='${settlement.id}' data-type='${settlement.faction}' data-location='${settlement.location}'></div>`, this.board);
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
-					event = document.createEvent("SVGEvents");
-					event.initEvent("click", true, true);
-					$(`ALTAYregion-${settlement.location}`).dispatchEvent(event);
+					if (dojo.hasClass(node, 'ALTAYselectable'))
+					{
+						dojo.query('.ALTAYregion').forEach((node) => node.setAttribute('class', 'ALTAYregion ALTAYdisabled'));
+						$(`ALTAYregion-${node.dataset.location}`).setAttribute('class', 'ALTAYregion ALTAYselected');
+						for (let l of this.gamedatas.gamestate.args.locations[node.dataset.location])
+							$(`ALTAYregion-${l}`).setAttribute('class', 'ALTAYregion ALTAYselectable');
+					}
+					else
+					{
+						event = document.createEvent("SVGEvents");
+						event.initEvent("click", true, true);
+						$(`ALTAYregion-${settlement.location}`).dispatchEvent(event);
+					}
 				});
 //
 				index = 0;

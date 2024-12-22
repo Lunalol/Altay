@@ -4,8 +4,10 @@ function achievementCard(card)
 {
 	const achievementCard = gameui.gamedatas.ACHIEVEMENTS[card.type][card.type_arg];
 //
+	const oncePerTurn = achievementCard[0].match(/\$\{ONCEPERTURN\}/);
+//
 	let html = '';
-	html += `<div id='ALTAYachievement-${card.id}' title='${_(achievementCard.title.toUpperCase())}' class='ALTAYachievementCards' data-id='${card.id}' data-type='${card.type}' data-type_arg='${card.type_arg}' style='background-position-x:${card.type_arg * 100 / 10}%'>`;
+	html += `<div id='ALTAYachievement-${card.id}' title='${_(achievementCard.title.toUpperCase())}' class='ALTAYachievementCards ${oncePerTurn ? 'ALTAYoncePerTurn' : ''}' data-id='${card.id}' data-type='${card.type}' data-type_arg='${card.type_arg}' style='background-position-x:${card.type_arg * 100 / 10}%'>`;
 	html += `<div class='ALTAYachievementCardTitle'>${_(achievementCard.title.toUpperCase())}</div>`;
 	html += `<div class='ALTAYachievementCardEffect' style='top:76cqh;bottom:5cqh;left:6cqw;right:18cqw;'>${translate(achievementCard[0])}</div>`;
 	html += `</div>`;

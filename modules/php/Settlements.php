@@ -75,24 +75,24 @@ class Settlements extends \APP_GameClass
 	{
 		$disabled = Board::getDisabled();
 //
-		foreach (array_keys(Board::REGIONS) as $location)
+		$locations = [];
+		foreach (self::getOwned($faction) as $location)
 		{
-			$settlements = self::getAt($location);
-//
-			$self[$location] = sizeof(array_filter($settlements, fn($settlement) => $settlement['faction'] === $faction));
-			$ennemy[$location] = sizeof(array_filter($settlements, fn($settlement) => $settlement['faction'] !== $faction));
+			$locations[$location] = [];
+			foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && (Markers::getConquestMarkersAt($next_location) || (self::getOwned($next_location) && self::getOwned($next_location) !== $faction))) $locations[$location][] = $next_location;
 		}
 //
-		$locations = [];
-		foreach (array_keys(Board::REGIONS) as $location)
-		{
-			if (in_array($location, $disabled)) continue;
+		return $locations;
+	}
+	static function resettle(string $faction): array
+	{
+		$disabled = Board::getDisabled();
 //
-			if ($self[$location] > 0 && $ennemy[$location] === 0)
-			{
-				$locations[$location] = [];
-				foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && Markers::getConquestMarkersAt($next_location) || $ennemy[$next_location] > 0) $locations[$location][] = $next_location;
-			}
+		$locations = [];
+		foreach (self::getOwned($faction) as $location)
+		{
+			$locations[$location] = [];
+			foreach (Board::ADJACENCY[$location] as $next_location) if (!in_array($next_location, $disabled) && (!Markers::getConquestMarkersAt($next_location) || self::getOwned($next_location) === $faction)) $locations[$location][] = $next_location;
 		}
 //
 		return $locations;
