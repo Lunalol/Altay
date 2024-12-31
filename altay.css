@@ -3,9 +3,6 @@
 {
 	user-select: none;
 }
-#topbar, #page-title, .whiteblock, .roundedbox, .pageheader, .pagesection, .pagesection h2
-{
-}
 /* </editor-fold> */
 /* <editor-fold defaultstate="collapsed" desc="LOGS"> */
 .ALTAYphase
@@ -36,30 +33,35 @@
 }
 .log .ALTAYresource
 {
-	height: 20px;
+	height: 15px;
 }
 /* </editor-fold> */
 /* <editor-fold defaultstate="collapsed" desc="PLAYAREA"> */
-#ALTAYplayArea
+#ALTAY
 {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin: 5px;
+}
+#ALTAYplayArea
+{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
 }
 /* </editor-fold> */
 /* <editor-fold defaultstate="collapsed" desc="BOARD"> */
 #ALTAYboard
 {
+	flex: 1 1 50%;
+	margin: 1%;
 	position: relative;
 	aspect-ratio: 2835/2008;
 	background-image: url('img/board.jpg');
 	background-size: cover;
-	margin: 5px 200px;
 	border-radius: 10px;
 	box-shadow: 0px 0px 5px 5px black;
-	width: 80%;
-	max-width: 50vmax;
 	container-type: size;
 }
 #ALTAYboard.ALTAY2players {
@@ -73,14 +75,15 @@
 #ALTAYachievementCardDisplay
 {
 	display: grid;
-	grid-template-columns: [level] 200px repeat(3, [cards] 200px);
+	grid-template-columns: [level] 25% repeat(3, [cards] 25%);
 	grid-template-rows: [level-1] 1fr [level-2] 1fr [level-3] 1fr;
 	justify-content: center;
 	margin: 5px 0px;
+	width: 75%;
 }
 #ALTAYachievementCardDisplay>div>.ALTAYachievementCards:not(:first-child)
 {
-	margin-top: -115px;
+	margin-top: -60%;
 }
 .ALTAYachievementCardHolder {
 	background-color: #40404040;
@@ -247,7 +250,7 @@
 .ALTAYplayerHand
 {
 	position: fixed;
-	bottom: -240px;
+	bottom: -270px;
 	display:flex;
 	flex-wrap: nowrap;
 	justify-content: center;
@@ -265,7 +268,7 @@
 }
 .ALTAYplayerHand>.ALTAYactionCards
 {
-	height: 250px;
+	height: 300px;
 	transition:transform 1s, box-shadow .5s;
 }
 .ALTAYplayerHand>.ALTAYactionCards:nth-child(even)
@@ -573,32 +576,61 @@
 }
 /* </editor-fold> */
 
-.ALTAYplayOnTable
-{
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-evenly;
-	margin: 0px;
-}
-.ALTAYplayOnTable>.ALTAYactionCards {
-	width: 72px;
-}
-.ALTAYplayOnTable>.ALTAYachievementCards {
-	width: 110px;
-}
 
 .ALTAYplayer
 {
-	background-color: #ffffff40;
-	border-radius: 5px;
-	margin: 0px 5px;
-	padding: 2px;
+	flex: 1 1 50%;
+	margin: 1%;
+}
+.ALTAYplayerArea
+{
+	position: relative;
+	width: 75%;
+	padding: 40px 5px 5px 5px;
+	border: 10px groove var(--color);
+	background-color: #ebd5bd;
+	box-sizing: border-box;
+	border-radius: 10px;
+	min-height: 200px;
+}
+.ALTAYplayer>.ALTAYplayerArea {
+	width: 100%;
+}
+.ALTAYplayerArea::before {
+	position: absolute;
+	top: 0px;
+	content: attr(player);
+	font-size: xx-large;
+	font-weight: bold;
+	color: var(--color);
+}
+.ALTAYplayOnTable
+{
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+}
+.ALTAYplayOnTable>.ALTAYactionCards {
+	width: 20%;
+	margin: 0.5%;
+}
+.ALTAYplayOnTable>.ALTAYachievementCards {
+	width: 20%;
+	margin: 0.5%;
+}
+.ALTAYsecret>.ALTAYachievementCards {
+	width: 50%;
+	margin: 1%;
 }
 
-.mobile_version #ALTAYboard {
-	max-width: 100vmax;
+.mobile_version .ALTAYplayArea {
+	flex-direction: column;
 }
-.mobile_version .ALTAYplayOnTable>.ALTAYachievementCards
-{
-	width:170px;
+.mobile_version .ALTAYboard {
+	width: 90%;
+	margin: 5%;
+}
+.mobile_version .ALTAYplayer {
+	width: 90%;
+	margin: 5%;
 }
