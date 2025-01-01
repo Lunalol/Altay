@@ -251,7 +251,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //
 			for (let [type, actionCards] of Object.entries(gamedatas.actionCards))
 			{
-				const node = dojo.place(`<div class='ALTAYactionCardHolder'></div>`, 'ALTAYactionCardDisplay');
+				const title = gamedatas.ACTIONCARDS[(type - 1) * 8 + 1].title;
+				const node = dojo.place(`<div data-title='${title}' class='ALTAYactionCardHolder'></div>`, 'ALTAYactionCardDisplay');
 				for (let card of actionCards) dojo.place(actionCard(card), node, 'first');
 				dojo.connect(node, 'click', (event) => {
 					dojo.stopEvent(event);
@@ -343,10 +344,29 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					{
 						if (this.isCurrentPlayerActive())
 						{
-							dojo.query('.ALTAYactionCards[data-id],.ALTAYachievementCards[data-id]', 'ALTAYplayer').addClass('ALTAYselectable');
-							dojo.query('.ALTAYachievementCards[data-id]', `ALTAYsecret-${this.player_id}`).addClass('ALTAYselectable');
-							dojo.query('.ALTAYactionCardHolder', 'ALTAYactionCardDisplay').addClass('ALTAYselectable');
+// Action cards play-on-table
+							dojo.query('.ALTAYactionCards[data-id]', 'ALTAYplayer').forEach((node) =>
+							{
+								dojo.addClass(node, 'ALTAYselectable');
+							});
+// Achievement cards play-on-table
+							dojo.query('.ALTAYachievementCards[data-id]', 'ALTAYplayer').forEach((node) =>
+							{
+								if (dojo.query('>.ALTAYresource', node).length > 0) dojo.addClass(node, 'ALTAYselectable');
+								else if (dojo.hasClass(node, 'ALTAYoncePerTurn'))
+								{
+									if (!state.args._private.acquired.includes(this.gamedatas.ACHIEVEMENTS[node.dataset.type][node.dataset.type_arg].title)) dojo.addClass(node, 'ALTAYselectable');
+								}
+							});
+// Action cards display
+							dojo.query('.ALTAYactionCardHolder', 'ALTAYactionCardDisplay').forEach((node) =>
+							{
+								if (!state.args._private.acquired.includes(node.dataset.title)) dojo.addClass(node, 'ALTAYselectable');
+							});
+// Achivement cards display
 							dojo.query('.ALTAYachievementCards[data-id]', 'ALTAYachievementCardDisplay').addClass('ALTAYselectable');
+// Secret achievement
+							dojo.query('.ALTAYachievementCards[data-id]', `ALTAYsecret-${this.player_id}`).addClass('ALTAYselectable');
 //
 							if (this.getGameUserPreference(AUTO))
 							{
@@ -588,12 +608,16 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 								dojo.stopEvent(event);
 								$(this.board).scrollIntoView({behavior: 'instant', block: 'center'});
 								dojo.addClass(this.playerHand, 'ALTAYselected');
-								const cards = dojo.query('.ALTAYactionCard', this.playerHand);
-								const resources = dojo.query('>.ALTAYresource', `ALTAYresources-${this.player_id}`);
-								if (cards.length === 0 && resources.length === 0) this.bgaPerformAction('actPass');
-								else if (cards.length !== 0 && resources.length === 0) this.confirmationDialog('You have unused cards in hand', () => this.bgaPerformAction('actPass'));
-								else if (cards.length === 0 && resources.length !== 0) this.confirmationDialog('You have unused resources in stock', () => this.bgaPerformAction('actPass'));
-								else this.confirmationDialog('You have unused cards in hand and unused resources in stock', () => this.bgaPerformAction('actPass'));
+								const cards = dojo.query('.ALTAYactionCard', this.playerHand).length;
+								const resources = dojo.query('>.ALTAYresource', `ALTAYresources-${this.player_id}`).length;
+								const effects = dojo.query('.ALTAYachievementCards.ALTAYoncePerTurn.ALTAYselectable', `ALTAYplayer`).length;
+								if ((cards + resources + effects) === 0) return this.bgaPerformAction('actPass');
+								let confirm = "<ul>";
+								if (cards > 0) confirm += "<li style='list-style:circle;list-style-position:inside;'>" + _('Unused <B>Action Cards</B> in hand') + '</li>';
+								if (resources > 0) confirm += "<li style='list-style:circle;list-style-position:inside;'>" + _('Unused <B>resources</B> in stock') + '</li>';
+								if (effects > 0) confirm += "<li style='list-style:circle;list-style-position:inside;'>" + _('Unused <B>Once Per Turn</B> effects') + '</li>';
+								confirm += '</ul>';
+								this.confirmationDialog(confirm, () => this.bgaPerformAction('actPass'));
 							}, null, false, 'red');
 //
 						}
