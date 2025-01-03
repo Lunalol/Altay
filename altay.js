@@ -84,7 +84,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 //				const node = `player_board_${player_id}`;
 //
 				dojo.place(`
-<div id='ALTAYfactionDisplay-${player_id}' class='ALTAYfactionDisplay' style="display:inline-flex;align-items:center;width:100%;justify-content:space-between;">
+<div id='ALTAYfactionDisplay-${player_id}' class='ALTAYfactionDisplay'>
 	<div id="ALTAYplayerDeck-${player_id}" class='ALTAYplayerInfo'">
 		<img draggable="false" style="height:25px;vertical-align:middle;" src="${g_gamethemeurl}img/SVG/deck.svg">
 		<span id="ALTAYplayerDeck-${player_id}-value" style="margin:0px 5px;">?</span>
@@ -344,6 +344,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 					{
 						if (this.isCurrentPlayerActive())
 						{
+							dojo.addClass(`ALTAYplayerDiscard-${this.player_id}`, 'ALTAYselectable');
 // Action cards play-on-table
 							dojo.query('.ALTAYactionCards[data-id]', 'ALTAYplayer').forEach((node) =>
 							{
@@ -355,7 +356,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 								if (dojo.query('>.ALTAYresource', node).length > 0) dojo.addClass(node, 'ALTAYselectable');
 								else if (dojo.hasClass(node, 'ALTAYoncePerTurn'))
 								{
-									if (!state.args._private.acquired.includes(this.gamedatas.ACHIEVEMENTS[node.dataset.type][node.dataset.type_arg].title)) dojo.addClass(node, 'ALTAYselectable');
+									if (!state.args._private.acquired.includes(this.gamedatas.ACHIEVEMENTS[node.dataset.type][node.dataset.type_arg].title)) dojo.addClass(node, 'ALTAYselected ALTAYselectable');
 								}
 							});
 // Action cards display
@@ -610,7 +611,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 								dojo.addClass(this.playerHand, 'ALTAYselected');
 								const cards = dojo.query('.ALTAYactionCard', this.playerHand).length;
 								const resources = dojo.query('>.ALTAYresource', `ALTAYresources-${this.player_id}`).length;
-								const effects = dojo.query('.ALTAYachievementCards.ALTAYoncePerTurn.ALTAYselectable', `ALTAYplayer`).length;
+								const effects = dojo.query('.ALTAYachievementCards.ALTAYoncePerTurn.ALTAYselected', `ALTAYplayer`).length;
 								if ((cards + resources + effects) === 0) return this.bgaPerformAction('actPass');
 								let confirm = "<ul>";
 								if (cards > 0) confirm += "<li style='list-style:circle;list-style-position:inside;'>" + _('Unused <B>Action Cards</B> in hand') + '</li>';
@@ -1155,8 +1156,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 				});
 //
 				index = 0;
-				const nodes = dojo.query(`.ALTAYsettlement[data-location='${settlement.location}']`, this.board);
-				dojo.query(`.ALTAYsettlement[data-location='${settlement.location}']`, this.board).forEach((node) => {
+				const nodes = dojo.query(`.ALTAYsettlement.${settlement.faction}[data-location='${settlement.location}']`, this.board);
+				nodes.forEach((node) => {
 					dojo.setAttr(node, 'count', nodes.length > 1 ? nodes.length : '');
 					dojo.style(node, {
 						position: 'absolute', 'display': index > 0 ? 'none' : '',
@@ -1173,6 +1174,14 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 			else
 			{
 				const node = dojo.place(`<div id='ALTAYsettlement-${settlement.id}' class='ALTAYsettlement ${settlement.faction}' tabindex='0' data-id='${settlement.id}' data-type='${settlement.faction}' data-location='${settlement.location}'></div>`, `ALTAYsettlementMarkerContainer-${settlement.location}`);
+//
+				index = 0;
+				const nodes = dojo.query(`.ALTAYsettlement.${settlement.faction}[data-location='${settlement.location}']`, `ALTAYsettlementMarkerContainer-${settlement.location}`);
+				nodes.forEach((node) => {
+					dojo.setAttr(node, 'count', nodes.length > 1 ? nodes.length : '');
+					dojo.style(node, 'display', index > 0 ? 'none' : '');
+					index++;
+				});
 			}
 		},
 		removeSettlement(settlement)
@@ -1202,7 +1211,18 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter",
 							index++;
 						});
 					}
-				}
+					else
+					{
+						index = 0;
+						const nodes = dojo.query(`.ALTAYsettlement.${settlement.faction}[data-location='${settlement.location}']`, `ALTAYsettlementMarkerContainer-${settlement.location}`);
+						nodes.forEach((node) => {
+							dojo.setAttr(node, 'count', nodes.length > 1 ? nodes.length : '');
+							dojo.style(node, 'display', index > 0 ? 'none' : '');
+							index++;
+						});
+
+					}
+				};
 				anim.play();
 			}
 		},
